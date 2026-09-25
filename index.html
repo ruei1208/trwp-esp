@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRWP 靜電捕捉裝置</title>
+<meta name="description" content="主動式輪胎磨損微粒(TRWP)靜電捕捉裝置——大學專題成果網站">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   配色與字體：只要改這裡就能整站微調
+   ========================================================= */
+:root{
+  --bg:        #0a120e;   /* 主背景：近黑墨綠 */
+  --bg-2:      #0f1a15;   /* 次背景（交錯段落） */
+  --surface:   #14221c;   /* 卡片 */
+  --surface-2: #1b2c25;   /* 卡片 hover / 表頭 */
+  --line:      #25382f;   /* 分隔線 */
+  --text:      #e9f0ec;   /* 主文字 */
+  --muted:     #93a69c;   /* 次要文字 */
+  --faint:     #5f7268;   /* 更淡的註解 */
+  --accent:    #ff7a1a;   /* 強調色：高壓橘 */
+  --accent-2:  #ffb070;   /* 強調色淺階 */
+  --accent-bg: rgba(255,122,26,.10);
+  --eco:       #7fd6a4;   /* 輔助色：環保綠（少量使用） */
+  --danger:    #ff5a4e;
+
+  --font-sans: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-num:  "Space Grotesk", "Noto Sans TC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  --maxw: 1180px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --radius: 14px;
+  --ease: cubic-bezier(.2,.7,.2,1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-sans);line-height:1.75;font-size:clamp(15px,1.05vw,17px);overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit}
+::selection{background:var(--accent);color:#111}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gutter)}
+section{position:relative;padding:clamp(80px,12vw,160px) 0}
+section.alt{background:var(--bg-2)}
+
+/* ---------- 導覽列 ---------- */
+.nav{position:fixed;inset:0 0 auto 0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:14px var(--gutter);transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(10,18,14,.85);backdrop-filter:blur(10px);border-color:var(--line)}
+.brand{font-family:var(--font-num);font-weight:700;letter-spacing:.08em;font-size:15px;text-decoration:none;display:flex;gap:10px;align-items:center}
+.brand i{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+.nav ul{list-style:none;display:flex;gap:22px;font-size:14px}
+.nav ul a{text-decoration:none;color:var(--muted);transition:color .2s}
+.nav ul a:hover,.nav ul a.active{color:var(--accent)}
+@media(max-width:860px){.nav ul{display:none}}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:60;width:0}
+
+/* ---------- 共用排版 ---------- */
+.eyebrow{font-family:var(--font-mono);font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+h2{font-size:clamp(30px,5vw,60px);line-height:1.15;font-weight:900;letter-spacing:-.01em;margin-bottom:24px}
+h3{font-size:clamp(20px,2.2vw,26px);line-height:1.35;font-weight:700;margin-bottom:12px}
+h4{font-size:17px;font-weight:700;margin-bottom:8px}
+.lead{font-size:clamp(17px,1.6vw,21px);color:var(--muted);max-width:760px}
+.lead strong,p strong{color:var(--text)}
+.hl{color:var(--accent)}
+p+p{margin-top:1em}
+.muted{color:var(--muted)}
+.small{font-size:14px;color:var(--muted)}
+.cite{font-family:var(--font-mono);font-size:12px;color:var(--faint)}
+.grid{display:grid;gap:clamp(16px,2.4vw,28px)}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:900px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.g21{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+@media(max-width:640px){.g2,.g3,.g4,.g21{grid-template-columns:minmax(0,1fr)}}
+.mt-s{margin-top:24px}.mt-m{margin-top:56px}.mt-l{margin-top:clamp(72px,9vw,120px)}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:clamp(20px,2.4vw,30px)}
+.tag{display:inline-block;font-family:var(--font-mono);font-size:12px;padding:3px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.tag.ok{border-color:rgba(127,214,164,.4);color:var(--eco)}
+
+/* ---------- 進場動畫 ---------- */
+.reveal{opacity:0;transform:translateY(36px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* ---------- 圖片與 placeholder ---------- */
+figure{margin:0}
+figure .frame{border-radius:var(--radius);overflow:hidden;background:#fff;border:1px solid var(--line);cursor:zoom-in}
+figure .frame.dark{background:#111}
+figure .frame img{width:100%;height:auto;transition:transform .6s var(--ease)}
+figure .frame:hover img{transform:scale(1.02)}
+figcaption{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.6}
+figcaption b{color:var(--accent);font-family:var(--font-mono);font-weight:500;margin-right:6px}
+.placeholder{border:1.5px dashed var(--accent);border-radius:var(--radius);background:repeating-linear-gradient(135deg,var(--accent-bg) 0 12px,transparent 12px 24px);
+  min-height:240px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--accent-2);font-family:var(--font-mono);font-size:14px;gap:6px}
+.placeholder small{color:var(--muted);font-size:12px}
+
+/* ---------- HERO ---------- */
+.hero{min-height:100svh;display:flex;align-items:center;padding-top:110px;overflow:hidden}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
+.hero .wrap{position:relative;z-index:1;width:100%}
+.hero::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,var(--bg));z-index:0;pointer-events:none}
+.hero h1{font-size:clamp(36px,7.4vw,96px);line-height:1.05;font-weight:900;letter-spacing:-.02em;max-width:14em}
+.hero h1 .en{display:block;font-family:var(--font-num);font-size:.3em;font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:22px;line-height:1.4}
+.hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:clamp(40px,7vw,80px);border-top:1px solid var(--line)}
+.hero-stats>div{padding:24px 24px 0 0}
+.hero-stats>div+div{padding-left:24px;border-left:1px solid var(--line)}
+@media(max-width:700px){.hero-stats{grid-template-columns:1fr}.hero-stats>div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}.hero-stats>div{padding:20px 0}}
+.hero-stats .num{font-family:var(--font-num);font-weight:700;font-size:clamp(40px,5vw,64px);line-height:1;color:var(--accent)}
+.hero-stats p{font-size:14px;color:var(--muted);margin-top:10px}
+.scroll-hint{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:2;font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-hint span{width:1px;height:40px;background:linear-gradient(var(--accent),transparent);animation:drip 1.8s infinite}
+@media(max-width:700px){.scroll-hint{display:none}}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- 電影式大字句 ---------- */
+.statement{padding:clamp(100px,16vw,200px) 0;text-align:left}
+.statement p{font-size:clamp(26px,4.6vw,56px);line-height:1.3;font-weight:900;max-width:18em}
+.statement p .dim{color:var(--faint)}
+
+/* ---------- 問題段 ---------- */
+.big-stat{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(40px,6vw,70px) 0;border-top:1px solid var(--line)}
+.big-stat:last-of-type{border-bottom:1px solid var(--line)}
+@media(max-width:760px){.big-stat{grid-template-columns:minmax(0,1fr)}}
+.mega{font-family:var(--font-num);font-weight:700;font-size:clamp(72px,13vw,168px);line-height:.9;letter-spacing:-.04em;color:var(--text)}
+.mega .u{font-size:.42em;color:var(--accent);margin-left:.06em;letter-spacing:0}
+.mega.accent{color:var(--accent)}
+.chem{font-family:var(--font-mono);font-size:14px;color:var(--accent-2);background:var(--accent-bg);border-radius:8px;padding:12px 14px;margin:16px 0;line-height:1.6}
+.flaw{border-left:2px solid var(--danger);padding-left:18px}
+.flaw h4{color:var(--danger)}
+
+/* ---------- 原理 ---------- */
+.formula-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:760px){.formula-row{grid-template-columns:1fr}}
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;position:relative}
+.formula .eq{font-family:var(--font-num);font-size:clamp(28px,3.4vw,40px);font-weight:500;letter-spacing:.02em;margin:6px 0 10px}
+.formula .eq i{font-style:italic}
+.formula .no{position:absolute;top:18px;right:20px;font-family:var(--font-mono);font-size:12px;color:var(--faint)}
+.formula.key{border-color:var(--accent);background:linear-gradient(160deg,var(--accent-bg),var(--surface) 60%)}
+.formula.key .eq{color:var(--accent)}
+.specs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.specs>div{padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface)}
+.specs .v{font-family:var(--font-num);font-size:clamp(26px,3vw,38px);font-weight:700;line-height:1.1}
+.specs .v small{font-size:.5em;color:var(--accent);margin-left:4px}
+.specs .k{font-size:13px;color:var(--muted);margin-top:6px}
+@media(max-width:900px){.specs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:var(--font-mono);font-size:13px}
+.chain span{padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.chain span.hot{border-color:var(--accent);color:var(--accent)}
+.chain b{color:var(--faint);font-weight:400}
+.chain span.relay{border-color:var(--text);color:var(--text);background:var(--surface-2);font-weight:500}
+.chain.signal span{border-color:rgba(127,214,164,.35);color:var(--eco)}
+.chain.signal span.relay{border-color:var(--text);color:var(--text)}
+.circuit{border:1px solid var(--line);border-radius:var(--radius);padding:clamp(18px,2.4vw,28px);background:var(--bg-2)}
+.lane-label{font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.lane-label i{width:8px;height:8px;border-radius:50%}
+.circuit .link{font-family:var(--font-mono);font-size:12px;color:var(--faint);margin:14px 0 14px 12px;padding-left:14px;border-left:1px dashed var(--faint)}
+.circuit-notes{border-top:1px solid var(--line);padding-top:16px}
+.code-params{font-family:var(--font-mono);font-size:13px;display:grid;gap:8px}
+.code-params div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+.code-params code{color:var(--accent-2)}
+.code-params span{color:var(--muted);font-family:var(--font-sans)}
+
+/* ---------- 互動模擬器 ---------- */
+.sim{border:1px solid var(--line);border-radius:18px;background:var(--surface);overflow:hidden}
+.sim-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;padding:clamp(18px,2.4vw,26px) clamp(18px,2.4vw,28px);border-bottom:1px solid var(--line)}
+.sim-head h3{margin:4px 0 0}
+.sim-head .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;color:var(--accent)}
+.sim-body{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+@media(max-width:860px){.sim-body{grid-template-columns:minmax(0,1fr)}}
+.sim-stage{background:var(--bg);position:relative;min-height:300px}
+.sim-stage canvas{display:block;width:100%;height:340px}
+@media(max-width:600px){.sim-stage canvas{height:280px}}
+.sim-ctrl{padding:clamp(18px,2.4vw,26px);display:flex;flex-direction:column;gap:18px;border-left:1px solid var(--line)}
+@media(max-width:860px){.sim-ctrl{border-left:0;border-top:1px solid var(--line)}}
+.sim-foot{padding:14px clamp(18px,2.4vw,28px);border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.ctl-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.ctl-label output{font-family:var(--font-num);font-weight:700;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);height:28px;cursor:pointer}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;background:transparent;border:0;color:var(--muted);padding:10px 8px;font:inherit;font-size:13px;cursor:pointer;transition:background .2s,color .2s}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accent);color:#1a0d02;font-weight:700}
+.btn{background:transparent;border:1px solid var(--line);color:var(--text);padding:10px 14px;border-radius:10px;font:inherit;font-size:13px;cursor:pointer;transition:border-color .2s,color .2s}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.readout{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.readout div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+.readout small{display:block;font-size:12px;color:var(--muted)}
+.readout b{font-family:var(--font-num);font-size:clamp(22px,2.4vw,28px);line-height:1.2}
+.ctl-row{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.ctl-row .seg{flex:0 0 62%}
+.sw{position:relative;width:52px;height:28px;border-radius:99px;border:1px solid var(--line);background:var(--bg);cursor:pointer;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--faint);transition:transform .25s var(--ease),background .2s}
+.sw[aria-checked=true]{background:var(--accent-bg);border-color:var(--accent)}
+.sw[aria-checked=true]::after{transform:translateX(24px);background:var(--accent)}
+.hv-state{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.hv-state b{font-family:var(--font-num);font-size:clamp(40px,5vw,60px);line-height:1;color:var(--faint);transition:color .2s,text-shadow .2s}
+.hv-state.on b{color:var(--accent);text-shadow:0 0 24px rgba(255,122,26,.45)}
+.readout .meter{height:6px;border-radius:99px;background:var(--line);border:0;padding:0;overflow:hidden;margin-top:8px}
+.meter i{display:block;height:100%;width:0;background:var(--eco)}
+.rain-stage{padding:clamp(18px,2.4vw,26px);background:var(--bg);display:flex;flex-direction:column;gap:18px}
+.nodes{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.nodes .nd{font-family:var(--font-mono);font-size:12px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);color:var(--faint);background:var(--surface);transition:all .25s}
+.nodes .nd.on{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px rgba(255,122,26,.25)}
+.nodes .nd.sig.on{border-color:var(--eco);color:var(--eco);box-shadow:0 0 14px rgba(127,214,164,.2)}
+.nodes .nd.bad{border-color:var(--danger);color:var(--danger)}
+.nodes b{color:var(--faint);font-weight:400;font-size:12px}
+.nodes .nd.cut{border-style:dashed}
+.serial{font-family:var(--font-mono);font-size:12.5px;background:#050806;border:1px solid var(--line);border-radius:10px;padding:12px 14px;height:190px;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;color:#b9c8bf}
+.serial .t{color:var(--faint);margin-right:8px}
+.serial .wet{color:#7fb8ff}.serial .dry{color:var(--eco)}.serial .wait{color:var(--accent-2)}
+.serial-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--faint);margin-bottom:6px}
+
+/* ---------- 裝置 ---------- */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,5vw,64px);align-items:center}
+.split.rev>:first-child{order:2}
+@media(max-width:820px){.split{grid-template-columns:minmax(0,1fr)}.split.rev>:first-child{order:0}}
+.checklist{list-style:none;display:grid;gap:10px}
+.checklist li{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:14px}
+.checklist li .i{font-family:var(--font-mono);color:var(--faint);font-size:12px}
+.checklist li div small{display:block;color:var(--muted);font-size:12.5px}
+.logic{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media(max-width:760px){.logic{grid-template-columns:1fr}}
+.logic .card h4 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:middle}
+
+/* ---------- 成果 ---------- */
+#results{background:radial-gradient(1200px 600px at 80% 0%,rgba(255,122,26,.08),transparent 60%),var(--bg)}
+.kpi-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(12px,1.6vw,20px)}
+.kpi{grid-column:span 4;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:clamp(22px,2.6vw,34px);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:260px}
+.kpi.wide{grid-column:span 8}
+.kpi.half{grid-column:span 6}
+.kpi.hero-kpi{border-color:rgba(255,122,26,.55);background:linear-gradient(150deg,rgba(255,122,26,.14),var(--surface) 55%)}
+@media(max-width:980px){.kpi,.kpi.wide,.kpi.half{grid-column:span 6}}
+@media(max-width:640px){.kpi,.kpi.wide,.kpi.half{grid-column:span 12}}
+.kpi .label{font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi .val{font-family:var(--font-num);font-weight:700;font-size:clamp(56px,7.4vw,104px);line-height:1;letter-spacing:-.035em;margin:18px 0 6px;color:var(--text);white-space:nowrap}
+.kpi .val .u{font-size:.4em;color:var(--accent);margin-left:.08em;letter-spacing:0}
+.kpi.hero-kpi .val{color:var(--accent)}
+.kpi.hero-kpi .val .u{color:var(--accent-2)}
+.kpi .desc{font-size:14px;color:var(--muted);margin-top:auto;padding-top:14px}
+.kpi .desc strong{color:var(--text)}
+.versus{display:flex;align-items:flex-end;gap:clamp(14px,3vw,40px);flex-wrap:wrap;margin:18px 0 6px}
+.versus .side .val{margin:0}
+.versus .arrow{font-family:var(--font-num);font-size:clamp(28px,4vw,48px);color:var(--faint);padding-bottom:10px}
+.versus .cap{font-size:13px;color:var(--muted);margin-top:6px}
+.versus .off .val{color:var(--faint)}
+.times{font-family:var(--font-num);font-weight:700;color:var(--accent);font-size:clamp(20px,2vw,26px)}
+
+.bars{display:grid;gap:12px;margin-top:8px}
+.bar{display:grid;grid-template-columns:78px 1fr 64px;gap:12px;align-items:center;font-size:13px}
+.bar .track{height:12px;background:var(--bg);border-radius:99px;overflow:hidden}
+.bar .fill{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width 1.4s var(--ease)}
+.bar .fill.off{background:var(--faint)}
+.bar .n{font-family:var(--font-num);text-align:right}
+.in .bar .fill{width:var(--w)}
+
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--surface-2);font-weight:500;color:var(--muted);font-size:13px}
+td{background:var(--surface)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{font-family:var(--font-num);text-align:right}
+td .hl{font-weight:700}
+.table-cap{font-size:13px;color:var(--muted);margin-top:10px}
+.table-cap b{color:var(--accent);font-family:var(--font-mono);font-weight:500;margin-right:6px}
+.note{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:10px;padding:16px 20px;background:var(--surface);font-size:14px;color:var(--muted)}
+.note strong{color:var(--text)}
+
+/* ---------- 願景 ---------- */
+.sdg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:760px){.sdg{grid-template-columns:1fr}}
+.sdg .card{position:relative;overflow:hidden}
+.sdg .n{font-family:var(--font-num);font-weight:700;font-size:clamp(64px,8vw,110px);line-height:.9;color:var(--sdg);opacity:.95}
+.sdg .role{font-family:var(--font-mono);font-size:12px;color:var(--muted);margin:8px 0 12px;letter-spacing:.08em}
+.sdg .bar-top{position:absolute;inset:0 0 auto 0;height:4px;background:var(--sdg)}
+.loop{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px;margin-top:14px}
+.loop span{background:var(--accent-bg);color:var(--accent-2);padding:6px 12px;border-radius:99px}
+.loop b{color:var(--faint);font-weight:400}
+.issue{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:20px;padding:24px 0;border-top:1px solid var(--line)}
+.issue:last-child{border-bottom:1px solid var(--line)}
+@media(max-width:760px){.issue{grid-template-columns:1fr;gap:8px}}
+.issue h4{color:var(--accent)}
+.issue p{font-size:14.5px;color:var(--muted)}
+ol.future{list-style:none;counter-reset:f;display:grid;gap:12px}
+ol.future li{counter-increment:f;display:grid;grid-template-columns:44px 1fr;gap:10px;font-size:15px;color:var(--muted)}
+ol.future li::before{content:"0" counter(f);font-family:var(--font-num);font-weight:700;color:var(--accent);font-size:20px;line-height:1.5}
+
+/* ---------- 團隊 ---------- */
+.team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:980px){.team{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.team{grid-template-columns:1fr}}
+.member{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:26px;display:flex;flex-direction:column}
+.member .avatar{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;font-size:22px;font-weight:900;background:var(--surface-2);color:var(--text);margin-bottom:18px;border:1px solid var(--line)}
+.member.prof .avatar{background:var(--accent);color:#1a0d02;border:0}
+.member .name{font-size:22px;font-weight:900}
+.member .role{font-family:var(--font-mono);font-size:12px;color:var(--accent);letter-spacing:.1em;margin:4px 0 14px}
+.member p{font-size:14px;color:var(--muted)}
+
+/* ---------- Footer ---------- */
+footer{border-top:1px solid var(--line);padding:64px 0 40px;background:var(--bg)}
+footer .big{font-family:var(--font-num);font-weight:700;font-size:clamp(34px,7vw,88px);line-height:1;letter-spacing:-.03em}
+footer .big span{color:var(--accent)}
+details{border:1px solid var(--line);border-radius:10px;padding:14px 18px;background:var(--surface)}
+details summary{cursor:pointer;font-size:14px;color:var(--muted)}
+details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;word-break:break-word}
+
+/* ---------- Lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:100;background:rgba(5,9,7,.94);display:none;align-items:center;justify-content:center;padding:24px;flex-direction:column;gap:14px;cursor:zoom-out}
+.lb.open{display:flex}
+.lb img{max-width:min(1200px,100%);max-height:82vh;border-radius:10px;background:#fff}
+.lb p{color:var(--muted);font-size:14px;text-align:center;max-width:800px}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav class="nav" id="nav">
+  <a class="brand" href="#top"><i></i>TRWP · ESP</a>
+  <ul>
+    <li><a href="#problem">問題</a></li>
+    <li><a href="#principle">原理</a></li>
+    <li><a href="#device">裝置</a></li>
+    <li><a href="#results">成果</a></li>
+    <li><a href="#vision">願景</a></li>
+    <li><a href="#team">團隊</a></li>
+  </ul>
+</nav>
+
+<!-- ================= 1. HERO ================= -->
+<header class="hero" id="top">
+  <canvas id="particles" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow reveal">中原大學機械系 · 專題成果</div>
+    <h1 class="reveal d1">主動式輪胎磨損微粒<br><span class="hl">靜電捕捉裝置</span>
+      <span class="en">Active Electrostatic Capture of Tire &amp; Road Wear Particles (TRWP)</span>
+    </h1>
+    <p class="lead reveal d2" style="margin-top:28px">以 <strong>15 kV 直流高壓電場</strong> 結合 <strong>48 V 輪轂馬達</strong>，在低風阻條件下，於源頭攔截輪胎揚起的導電微粒。</p>
+
+    <div class="hero-stats">
+      <div class="reveal d2">
+        <div class="num"><span data-count="28" data-dec="0">28</span>%</div>
+        <p>輪胎磨損佔全球初級微塑膠排放來源比例，為第二大宗（圖一，Boucher &amp; Friot）</p>
+      </div>
+      <div class="reveal d3">
+        <div class="num">+<span data-count="53.5" data-dec="1">53.5</span>%</div>
+        <p>全球乘用車非廢氣微粒排放總量，預估至 2030 年之增幅（OECD）</p>
+      </div>
+      <div class="reveal d4">
+        <div class="num">3–8%</div>
+        <p>重型電動車之非廢氣 PM2.5 排放量，較同級燃油車高出的幅度（OECD）</p>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">SCROLL<span></span></div>
+</header>
+
+<!-- 電影式過場句 -->
+<div class="statement">
+  <div class="wrap">
+    <p class="reveal">廢氣排放已獲控制。<br><span class="dim">但電動車更重、扭力更大——</span><br><span class="hl">輪胎，仍在一路磨損。</span></p>
+  </div>
+</div>
+
+<!-- ================= 2. 問題陳述 ================= -->
+<section id="problem" class="alt">
+  <div class="wrap">
+    <div class="eyebrow reveal">01 — The Problem</div>
+    <h2 class="reveal">看不見的污染源，<br>藏在每一圈輪胎之下</h2>
+    <p class="lead reveal">隨著全球電動車市佔率急速攀升，傳統內燃機的廢氣排放雖已獲得控制，但電動車因電池重量增加與瞬間高扭力之特性，輪胎與路面磨損微粒（TRWP）之排放問題並未隨之改善。</p>
+
+    <div class="mt-m">
+      <div class="big-stat">
+        <div class="reveal"><div class="mega"><span data-count="28" data-dec="0">28</span><span class="u">%</span></div></div>
+        <div class="reveal d1">
+          <h3>全球初級微塑膠的第二大來源</h3>
+          <p class="muted">依 Boucher 與 Friot 之原始數據，輪胎磨損約佔全球初級微塑膠排放 28%，僅次於人造纖維（35%）。</p>
+          <figure class="mt-s" style="max-width:380px">
+            <div class="frame"><img src="images/fig01.jpeg" alt="全球初級微塑膠排放來源比例圓餅圖" loading="lazy"></div>
+            <figcaption><b>圖一</b>全球初級微塑膠排放來源比例（圖片來源：中央研究院提供，引自中時新聞網；原始數據：Boucher 與 Friot）</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <div class="big-stat">
+        <div class="reveal"><div class="mega">+<span data-count="53.5" data-dec="1">53.5</span><span class="u">%</span></div></div>
+        <div class="reveal d1">
+          <h3>電動化，不等於零排放</h3>
+          <p class="muted">OECD 評估指出，重型電動車之非廢氣 PM2.5 排放量較同級燃油車高約 <strong>3–8%</strong>；全球乘用車之非廢氣微粒排放總量，預估至 2030 年將增加約 <strong>53.5%</strong>。</p>
+        </div>
+      </div>
+
+      <div class="big-stat">
+        <div class="reveal"><div class="mega accent">6PPD</div></div>
+        <div class="reveal d1">
+          <h3>微粒裡藏著劇毒防老劑</h3>
+          <p class="muted">TRWP 不只包含橡膠，更含有輪胎防老劑 6PPD。其氧化產物 <strong>6PPD-quinone</strong> 隨雨水沖刷進入生態圈時，將對水生生物與人體健康造成嚴重之負面影響。</p>
+          <div class="chem">6PPD = N-(1,3-二甲基丁基)-N′-苯基對苯二胺<br>C₁₆H₂₄N₂ · 理論精確質量 268.1934 Da</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-l">
+      <h3 class="reveal">現有方案，卡在哪裡？</h3>
+      <p class="muted reveal" style="max-width:760px">國內外針對非廢氣排放微粒（NEE）的處理，多停留在法制研析與成分量測階段；實務硬體上，則多半採用傳統物理濾網或被動式空氣動力學導流。</p>
+      <div class="grid g3 mt-s">
+        <div class="card flaw reveal d1">
+          <h4>傳統物理濾網</h4>
+          <p class="small">對車輛行進造成極大風阻、容易堵塞，更會嚴重損耗電動車的續航里程。</p>
+        </div>
+        <div class="card flaw reveal d2">
+          <h4>被動式導流</h4>
+          <p class="small">對質量極輕的次微米微粒（PM2.5）捕捉效率低落。</p>
+        </div>
+        <div class="card flaw reveal d3">
+          <h4>既有靜電捕捉概念</h4>
+          <p class="small">國際新創團隊（如 The Tyre Collective）提出之靜電捕捉概念仍處於初步專利階段，缺乏具體的高壓電場流場驗證與模組化機構設計。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. 解決方案 / 原理 ================= -->
+<section id="principle">
+  <div class="wrap">
+    <div class="eyebrow reveal">02 — How It Works</div>
+    <h2 class="reveal">不靠濾網擋，<br>用<span class="hl">電場</span>把微粒「拉」下來</h2>
+    <p class="lead reveal">本裝置的作動原理基於<strong>靜電集塵（Electrostatic Precipitation, ESP）</strong>技術：含微粒氣流通過施加高壓直流電的平行銅片極板時，微粒在強烈電場中發生極化或帶電，並受橫向庫倫力偏折、吸附於極板上。</p>
+
+    <div class="formula-row mt-m">
+      <div class="formula reveal d1">
+        <span class="no">(1)</span>
+        <div class="small">庫倫力</div>
+        <div class="eq"><i>F</i><sub>e</sub> = <i>q</i><i>E</i></div>
+        <p class="small">q：微粒帶電量；E：極板間均勻電場強度</p>
+      </div>
+      <div class="formula reveal d2">
+        <span class="no">(2)</span>
+        <div class="small">平行板電場</div>
+        <div class="eq"><i>E</i> = <i>V</i> / <i>d</i></div>
+        <p class="small">V：施加直流高壓（15 kV）；d：平行極板間距</p>
+      </div>
+      <div class="formula key reveal d3">
+        <span class="no">(1)+(2)</span>
+        <div class="small">代入後</div>
+        <div class="eq"><i>F</i><sub>e</sub> = <i>q</i><i>V</i> / <i>d</i></div>
+        <p class="small">受力與電壓成正比、與極板間距成反比</p>
+      </div>
+    </div>
+
+    <div class="sim mt-m reveal" id="espSim">
+      <div class="sim-head">
+        <div><div class="label">INTERACTIVE · 互動模擬</div><h3>ESP 電場模擬器</h3></div>
+        <span class="tag">原理示意動畫 · 非實測數據</span>
+      </div>
+      <div class="sim-body">
+        <div class="sim-stage"><canvas id="espCanvas" aria-label="平行極板間帶電微粒偏折動畫"></canvas></div>
+        <div class="sim-ctrl">
+          <div>
+            <div class="ctl-label"><span>施加電壓 V</span><output id="vOut">15.0 kV</output></div>
+            <input type="range" id="vIn" min="0" max="20" step="0.5" value="15" aria-label="施加電壓">
+          </div>
+          <div>
+            <div class="ctl-label"><span>極板間距 d</span><output id="dOut">17 mm</output></div>
+            <input type="range" id="dIn" min="10" max="30" step="1" value="17" aria-label="極板間距">
+          </div>
+          <div>
+            <div class="ctl-label"><span>微粒種類</span></div>
+            <div class="seg" id="pType">
+              <button type="button" data-t="carbon" aria-pressed="true">導電碳黑</button>
+              <button type="button" data-t="mineral" aria-pressed="false">無機礦物</button>
+              <button type="button" data-t="mix" aria-pressed="false">混合</button>
+            </div>
+          </div>
+          <div class="readout">
+            <div><small>電場強度 E = V/d</small><b id="eOut">0.88</b> <small style="display:inline">kV/mm</small></div>
+            <div><small>相對庫倫力 F / F₀</small><b id="fOut">100%</b></div>
+          </div>
+          <button type="button" class="btn" id="espReset">回到報告設定：15 kV / 17 mm</button>
+        </div>
+      </div>
+      <div class="sim-foot">F₀ 為報告設定（15 kV、17 mm）下的受力。導電碳黑充電快、帶電量高、質量小，容易被偏折吸附；無機礦物帶電效率低、質量較大，多半直接穿越通道。動畫僅用來說明 F = qV/d 的趨勢，捕捉比例請以實驗成果段落為準。</div>
+    </div>
+
+    <div class="split mt-l">
+      <div class="reveal">
+        <h3>為什麼 TRWP 特別容易被抓？</h3>
+        <p class="muted">微米等級（PM2.5–PM10）之 TRWP 質量極小、慣性影響較弱，且橡膠基體含高比例<strong>導電碳黑</strong>，於電暈場中充電速率較快、飽和帶電量較高，故能在 <strong>17 mm</strong> 的極板間距內被 <strong>15 kV</strong> 電場顯著偏折並捕獲。</p>
+        <p class="muted">相對地，導電性較差、粒徑較大的無機礦物顆粒以慣性主導運動，較易直接穿越通道——使裝置具備對特定成分與粒徑微粒的<strong>篩選潛力</strong>。</p>
+      </div>
+      <figure class="reveal d1">
+        <div class="frame"><img src="images/fig02.png" alt="帶電粒子於平行板均勻電場中的受力分析" loading="lazy"></div>
+        <figcaption><b>圖二</b>帶電粒子於平行板均勻電場中的受力分析</figcaption>
+      </figure>
+    </div>
+
+    <div class="mt-l">
+      <h3 class="reveal">裝置規格</h3>
+      <div class="specs mt-s reveal d1">
+        <div><div class="v">15<small>kV</small></div><div class="k">直流高壓電場</div></div>
+        <div><div class="v">17<small>mm</small></div><div class="k">平行銅片極板定距</div></div>
+        <div><div class="v">48<small>V</small></div><div class="k">輪轂馬達（電動腳踏車驅動輪）</div></div>
+        <div><div class="v">350<small>RPM</small></div><div class="k">馬達最高轉速 ≈ 33 km/h 等效車速</div></div>
+        <div><div class="v">PLA</div><div class="k">3D 列印絕緣外殼（Autodesk Inventor 建模）</div></div>
+        <div><div class="v">4<small>片</small></div><div class="k">銅片極板，以尼龍絕緣柱定距</div></div>
+        <div><div class="v">2<small>A</small></div><div class="k">保險絲過電流保護（12 V 端）</div></div>
+        <div><div class="v">熱熔膠</div><div class="k">高壓端子與裸露線路絕緣封裝</div></div>
+      </div>
+    </div>
+
+    <div class="mt-l">
+      <h3 class="reveal">電路架構</h3>
+      <p class="muted reveal" style="max-width:780px">電路由兩條迴路組成：<strong>高壓電力路徑</strong>把市電逐級升到 15 kV 送上極板；<strong>雨滴感測器模組</strong>是獨立的低壓訊號迴路，透過繼電器的 IN 端控制 COM 與 NO 的通斷，下雨時自動切斷高壓。</p>
+      <div class="circuit mt-s reveal d1">
+        <div class="lane">
+          <div class="lane-label"><i style="background:var(--accent)"></i>高壓電力路徑</div>
+          <div class="chain" aria-label="高壓電力路徑">
+            <span>110 V 市電</span><b>→</b><span>變壓器 12 V</span><b>→</b><span>2 A 保險絲</span><b>→</b><span>手動開關</span><b>→</b><span class="relay">繼電器 COM→NO</span><b>→</b><span class="hot">升壓線圈 15 kV</span><b>→</b><span class="hot">銅片極板</span>
+          </div>
+        </div>
+        <div class="link" aria-hidden="true"><span>▲ IN 端控制 COM／NO 通斷</span></div>
+        <div class="lane">
+          <div class="lane-label"><i style="background:var(--eco)"></i>雨滴感測器模組（低壓訊號迴路）</div>
+          <div class="chain signal" aria-label="雨滴感測器訊號迴路">
+            <span>雨滴感測器 D0</span><b>→</b><span>Arduino D2 讀取</span><b>→</b><span>判斷：有水／延遲中／乾燥</span><b>→</b><span>Arduino D7 輸出</span><b>→</b><span class="relay">繼電器 IN</span>
+          </div>
+        </div>
+        <div class="grid g3 mt-s circuit-notes">
+          <p class="small"><strong>乾燥</strong>：D7 輸出觸發電位（低電位觸發），繼電器吸合、NO 導通，15 kV 正常運作。</p>
+          <p class="small"><strong>偵測到水</strong>：繼電器即時斷電，高壓關閉；停雨後經 DRY_DELAY 延遲才復電。</p>
+          <p class="small"><strong>手動開關</strong>：串接在繼電器 COM 端之前，關閉時直接切斷電源，優先權最高。</p>
+        </div>
+      </div>
+      <p class="small mt-s reveal">完整電路方塊圖見 <a href="#rain" class="hl">3.2 雨滴感測器安全保護模組</a>（圖七）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. 裝置實體 ================= -->
+<section id="device" class="alt">
+  <div class="wrap">
+    <div class="eyebrow reveal">03 — The Device</div>
+    <h2 class="reveal">從草圖到實機</h2>
+    <p class="lead reveal">本專題著重實體機構設計與機電系統整合：外殼可搭載於輪轂馬達後方，同時考量氣流導引與高壓絕緣需求，確保在車輛高頻震動與潮濕環境下不發生沿面漏電或極板跳火（Arc Discharge）。</p>
+
+    <div class="split mt-m">
+      <figure class="reveal">
+        <div class="frame"><img src="images/fig05.png" alt="靜電集塵裝置之雛形：白色 PLA 外殼與四片銅片極板" loading="lazy"></div>
+        <figcaption><b>圖五</b>靜電集塵裝置之雛形</figcaption>
+      </figure>
+      <div class="reveal d1">
+        <h3>機構設計</h3>
+        <p class="muted">PLA 3D 列印外殼 × 尼龍絕緣柱定距 × 熱熔膠封裝。尼龍柱維持極板間距，防止結構因外界撞擊或馬達高頻震動而變形移位；高壓端子壓接後以尼龍柱與螺帽鎖於銅片上。</p>
+        <div class="grid g2 mt-s">
+          <figure>
+            <div class="frame"><img src="images/fig03.png" alt="集塵裝置設計草圖，標示 17 mm 間距" loading="lazy"></div>
+            <figcaption><b>圖三</b>集塵裝置設計草圖</figcaption>
+          </figure>
+          <figure>
+            <div class="frame"><img src="images/fig04.jpg" alt="升壓線圈、變壓器與銅片" loading="lazy"></div>
+            <figcaption><b>圖四</b>左到右：12V→15kV 升壓線圈、110V→12V 變壓器、銅片</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <div class="split rev mt-l">
+      <figure class="reveal">
+        <div class="frame dark"><img src="images/fig12.jpg" alt="集塵盒回收機構設計圖" loading="lazy"></div>
+        <figcaption><b>圖十二</b>集塵盒回收機構設計圖（左：極板匣抽出狀態；右：組裝完成狀態）</figcaption>
+      </figure>
+      <div class="reveal d1">
+        <div class="tag">3.3</div>
+        <h3 class="mt-s">集塵盒回收機構</h3>
+        <p class="muted">於極板匣下方增設集塵盒空間，外殼底部開設可抽取之開闔式閘門，測試後可直接取出集塵盒秤重或送驗。極板匣可<strong>整組自外殼抽出</strong>，回收粉塵時無須拆解單片極板，亦便於整批秤重以核算累積捕捉量。</p>
+        <p class="small">現階段僅支援停駛後人工刮除；後續可朝機械敲擊（rapping）或輔助低壓電暈之自動化方向擴充。</p>
+      </div>
+    </div>
+
+    <!-- 雨滴感測器 -->
+    <div class="mt-l" id="rain" style="scroll-margin-top:80px">
+      <div class="tag reveal">3.2</div>
+      <h3 class="reveal mt-s">雨滴感測器安全保護模組</h3>
+      <p class="muted reveal" style="max-width:780px">15 kV 高壓若在潮濕環境下持續通電，可能導致沿面漏電或電弧放電。雨滴感測器偵測降雨 → Arduino 判讀 → 控制繼電器，偵測到降雨時<strong>自動切斷高壓電場供電</strong>。</p>
+
+      <div class="logic mt-s">
+        <div class="card reveal d1"><h4><span class="dot" style="background:var(--eco)"></span>乾燥 ＋ 手動開關開啟</h4><p class="small">Arduino D7 輸出觸發電位（低電位觸發），繼電器吸合、NO 導通，15 kV 電場正常運作。</p></div>
+        <div class="card reveal d2"><h4><span class="dot" style="background:var(--accent)"></span>偵測降雨 / Arduino 異常</h4><p class="small">繼電器釋放、NO 斷開，高壓隨即關閉；停雨後須經延遲時間才重新供電，避免殘留濕氣誤動作。</p></div>
+        <div class="card reveal d3"><h4><span class="dot" style="background:var(--danger)"></span>手動開關關閉</h4><p class="small">最高優先權：無論繼電器狀態，電源於實體電路上即被直接切斷。</p></div>
+      </div>
+
+      <div class="sim mt-m reveal" id="rainSim">
+        <div class="sim-head">
+          <div><div class="label">INTERACTIVE · 互動模擬</div><h3>雨滴感測器模擬器</h3></div>
+          <span class="tag">依附錄 A 程式邏輯 · DRY_DELAY = 5 秒（測試值）</span>
+        </div>
+        <div class="sim-body">
+          <div class="rain-stage">
+            <div>
+              <div class="serial-h">高壓電力路徑</div>
+              <div class="nodes">
+                <span class="nd on" data-n="ac">110 V 市電</span><b>→</b>
+                <span class="nd on" data-n="tf">變壓器 12 V</span><b>→</b>
+                <span class="nd on" data-n="fuse">2 A 保險絲</span><b>→</b>
+                <span class="nd" data-n="sw">手動開關</span><b>→</b>
+                <span class="nd" data-n="relay">繼電器 COM→NO</span><b>→</b>
+                <span class="nd" data-n="boost">升壓 15 kV</span><b>→</b>
+                <span class="nd" data-n="plate">銅片極板</span>
+              </div>
+            </div>
+            <div>
+              <div class="serial-h">低壓訊號迴路</div>
+              <div class="nodes">
+                <span class="nd sig" data-n="sensor">雨滴感測器 D0</span><b>→</b>
+                <span class="nd sig" data-n="mcu">Arduino</span><b>→</b>
+                <span class="nd sig" data-n="in">D7 → 繼電器 IN</span>
+              </div>
+            </div>
+            <div>
+              <div class="serial-h">SERIAL MONITOR · 9600 baud</div>
+              <div class="serial" id="serial" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="sim-ctrl">
+            <div class="hv-state" id="hvState"><b id="hvText">OFF</b><span class="small">15 kV 電場</span></div>
+            <div class="ctl-row"><span>天氣</span>
+              <div class="seg" id="wx">
+                <button type="button" data-v="dry" aria-pressed="true">☀ 乾燥</button>
+                <button type="button" data-v="wet" aria-pressed="false">🌧 下雨</button>
+              </div>
+            </div>
+            <div class="ctl-row"><span>手動開關</span><button type="button" class="sw" id="manual" role="switch" aria-checked="true" aria-label="手動開關"></button></div>
+            <div class="ctl-row"><span>Arduino</span>
+              <div class="seg" id="mcu">
+                <button type="button" data-v="ok" aria-pressed="true">正常</button>
+                <button type="button" data-v="crash" aria-pressed="false">當機／鬆脫</button>
+              </div>
+            </div>
+            <div class="readout">
+              <div><small>繼電器</small><b id="relayText" style="font-size:16px">釋放</b></div>
+              <div><small>延遲復電</small><b id="delayText" style="font-size:18px">—</b><div class="meter"><i id="delayBar"></i></div></div>
+            </div>
+            <p class="small" id="rainNote" style="min-height:3.4em"></p>
+            <button type="button" class="btn" id="reboot">重新開機（setup）</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="split mt-m">
+        <div class="reveal">
+          <h4>為什麼選 NO（常開）接點？</h4>
+          <p class="muted" style="font-size:15px">故障安全（fail-safe）：當 Arduino 當機、電源異常或訊號線鬆脫時，繼電器線圈失去磁力，簧片自動彈回斷開位置，<strong>高壓電場隨之自動關閉</strong>。若採 NC 接點，控制電路故障時高壓反而持續開啟。</p>
+          <h4 class="mt-m">麵包板驗收結果 <span class="cite">表一</span></h4>
+          <ul class="checklist mt-s">
+            <li><span class="i">01</span><div>開機（乾燥狀態）<small>繼電器通電，15 kV 正常運作</small></div><span class="tag ok">通過</span></li>
+            <li><span class="i">02</span><div>偵測到降雨<small>繼電器即時斷電</small></div><span class="tag ok">通過</span></li>
+            <li><span class="i">03</span><div>停雨後延遲復電<small>延遲時間內維持斷電，屆滿後恢復供電</small></div><span class="tag ok">通過</span></li>
+            <li><span class="i">04</span><div>手動開關關閉之優先權<small>無論感測器狀態，強制斷電</small></div><span class="tag ok">設計成立</span></li>
+          </ul>
+        </div>
+        <figure class="reveal d1">
+          <div class="frame"><img src="images/fig07.jpg" alt="雨滴感測器安全保護模組完整電路方塊圖" loading="lazy"></div>
+          <figcaption><b>圖七</b>雨滴感測器安全保護模組完整電路方塊圖</figcaption>
+        </figure>
+      </div>
+
+      <div class="grid g3 mt-m">
+        <figure class="reveal"><div class="frame"><img src="images/fig08.png" alt="繼電器 NO/NC 接點選用理由" loading="lazy"></div><figcaption><b>圖八</b>繼電器 NO／NC 接點選用理由之邏輯示意</figcaption></figure>
+        <figure class="reveal d1"><div class="frame"><img src="images/fig10.jpg" alt="麵包板實體接線" loading="lazy"></div><figcaption><b>圖十</b>雨滴感測器安全保護模組之麵包板實體接線</figcaption></figure>
+        <figure class="reveal d2"><div class="frame"><img src="images/fig11.jpg" alt="序列埠監控紀錄" loading="lazy"></div><figcaption><b>圖十一</b>序列埠監控紀錄（左：乾燥持續通電；右：偵測降雨後斷電並延遲等待）</figcaption></figure>
+      </div>
+
+      <div class="split mt-m" style="align-items:start">
+        <div class="reveal">
+          <h4>Arduino 程式實作</h4>
+          <p class="muted" style="font-size:15px">系統上電後先將繼電器設為斷電，確保開機時高壓不會誤啟動；<code>loop()</code> 每 300 ms 讀取一次感測器：偵測到水即記錄時間並斷電，停雨超過 DRY_DELAY 才恢復通電，其餘情況維持斷電並輸出等待訊息。</p>
+          <div class="code-params mt-s">
+            <div><code>RAIN_D0 = 2</code><span>雨滴感測器數位輸出接 D2</span></div>
+            <div><code>RELAY_PIN = 7</code><span>繼電器控制訊號接 D7</span></div>
+            <div><code>RELAY_ACTIVE_HIGH = false</code><span>繼電器模組為低電位觸發</span></div>
+            <div><code>DRY_DELAY = 5000UL</code><span>停雨後延遲復電：測試用 5 秒，正式運作改為較長時間</span></div>
+            <div><code>setPower()</code><span>統一管理繼電器通斷，將「通電／斷電」轉換為對應高低電位</span></div>
+            <div><code>Serial.begin(9600)</code><span>以 9600 bps 輸出運作狀態</span></div>
+          </div>
+          <p class="small mt-s">完整程式碼見書面報告附錄 A。</p>
+        </div>
+        <figure class="reveal d1" style="max-width:460px;justify-self:center">
+          <div class="frame"><img src="images/fig09.png" alt="雨滴感測器安全保護模組之程式判斷流程" loading="lazy"></div>
+          <figcaption><b>圖九</b>雨滴感測器安全保護模組之程式判斷流程</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <!-- 實驗平台 -->
+    <div class="mt-l">
+      <h3 class="reveal">動態模擬平台</h3>
+      <p class="muted reveal" style="max-width:780px">基於專題預算考量，選用電動腳踏車之驅動輪（48 V 輪轂馬達）架設於專用支架上，將靜電捕捉裝置鎖固於馬達後方，模擬摩擦時粉塵隨氣流發散之位置。</p>
+      <div class="grid g21 mt-s">
+        <figure class="reveal"><div class="frame"><img src="images/fig06.jpg" alt="輪轂馬達模組" loading="lazy"></div><figcaption><b>圖六</b>用於模擬之輪轂馬達模組</figcaption></figure>
+        <figure class="reveal d1"><div class="frame"><img src="images/fig16.jpg" alt="動態摩擦測試平台" loading="lazy"></div><figcaption><b>圖十六</b>動態摩擦測試平台（輪胎下方鋪設砂紙）</figcaption></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. 實驗成果 ================= -->
+<section id="results">
+  <div class="wrap">
+    <div class="eyebrow reveal">04 — Results</div>
+    <h2 class="reveal">三階段驗證：<br>抓得到、抓得多、<span class="hl">抓到的是什麼</span></h2>
+    <p class="lead reveal">靜態封閉導流 → 動態輪胎摩擦 → 高解析質譜化學鑑定。</p>
+
+    <div class="kpi-grid mt-m">
+      <!-- 靜態 -->
+      <div class="kpi wide hero-kpi reveal">
+        <div class="label">Stage 1 · 靜態捕捉效率 η</div>
+        <div class="versus">
+          <div class="side off">
+            <div class="val"><span data-count="0.72" data-dec="2">0.72</span><span class="u">%</span></div>
+            <div class="cap">電場關閉（n=3）</div>
+          </div>
+          <div class="arrow">→</div>
+          <div class="side">
+            <div class="val"><span data-count="16.29" data-dec="2">16.29</span><span class="u">%</span></div>
+            <div class="cap">開啟 15 kV（n=5）</div>
+          </div>
+        </div>
+        <div class="desc">相同粉塵質量、氣流條件與裝置幾何下，兩者相差約 <span class="times">22×</span>——差異來自電場產生之庫倫力，確認靜電捕捉機制有效成立。</div>
+      </div>
+
+      <div class="kpi reveal d1">
+        <div class="label">捕捉效率倍增</div>
+        <div class="val">≈<span data-count="22" data-dec="0">22</span><span class="u">×</span></div>
+        <div class="desc">電場開啟 vs. 關閉。以導電碳粉作為 TRWP 替代物，依質量守恆法以分析天平量測。</div>
+      </div>
+
+      <!-- 動態 -->
+      <div class="kpi hero-kpi half reveal">
+        <div class="label">Stage 2 · 動態平均捕捉效率</div>
+        <div class="val">≈<span data-count="27" data-dec="0">27</span><span class="u">%</span></div>
+        <div class="desc">輪轂馬達最高轉速 <strong>350 RPM</strong>（≈ <strong>33 km/h</strong> 等效車速）下，輪胎摩擦砂紙 10／20／30 秒各三次；三組整體效率平均 <strong>26.9%</strong>。</div>
+      </div>
+
+      <div class="kpi half reveal d1">
+        <div class="label">粉塵擴散範圍</div>
+        <div class="val"><span data-count="73" data-dec="0">73</span><span class="u">cm</span></div>
+        <div class="desc">擴散區域水平 0–73 cm；沉積量最多處位於 <strong>27 cm</strong>，該處寬度約 <strong>21 cm</strong>。裝置據此放置於水平 25 cm 處。</div>
+      </div>
+
+      <!-- 質譜 -->
+      <div class="kpi wide hero-kpi reveal">
+        <div class="label">Stage 3 · 質譜鑑定質量誤差（6PPD）</div>
+        <div class="val"><span data-count="2.98" data-dec="2">2.98</span><span class="u">ppm</span></div>
+        <div class="desc">以 Bruker microTOF II 高解析飛行時間質譜儀比對同位素分佈：理論精確質量 <strong>268.1934 Da</strong>，實測 <strong>268.1926 Da</strong>，低於高解析質譜一般採用之 <strong>5 ppm</strong> 判定門檻，且 M 與 M+1 同位素峰相對強度與理論相符。</div>
+      </div>
+
+      <div class="kpi reveal d1">
+        <div class="label">極板定距 · 振動測試</div>
+        <div class="val">0<span class="u">跳火</span></div>
+        <div class="desc">動態測試全程未出現電壓驟降、異常放電聲響或極板跳火；17 mm 間距於振動下無位移。</div>
+      </div>
+    </div>
+
+    <!-- 靜態細節 -->
+    <div class="split mt-l">
+      <div class="reveal">
+        <h3>靜態測試：每一次都更好</h3>
+        <p class="muted" style="font-size:15px">η = m<sub>plate</sub> / (m<sub>plate</sub> + m<sub>escape</sub>) × 100%</p>
+        <div class="bars mt-s" aria-label="表三 各次捕捉效率">
+          <div class="bar"><span class="small">關閉 #1</span><div class="track"><div class="fill off" style="--w:4.76%"></div></div><span class="n">1.00%</span></div>
+          <div class="bar"><span class="small">關閉 #2</span><div class="track"><div class="fill off" style="--w:3.19%"></div></div><span class="n">0.67%</span></div>
+          <div class="bar"><span class="small">關閉 #3</span><div class="track"><div class="fill off" style="--w:2.38%"></div></div><span class="n">0.50%</span></div>
+          <div class="bar"><span class="small">開啟 #1</span><div class="track"><div class="fill" style="--w:42.86%"></div></div><span class="n">9.00%</span></div>
+          <div class="bar"><span class="small">開啟 #2</span><div class="track"><div class="fill" style="--w:80.95%"></div></div><span class="n">17.00%</span></div>
+          <div class="bar"><span class="small">開啟 #3</span><div class="track"><div class="fill" style="--w:88.9%"></div></div><span class="n">18.67%</span></div>
+          <div class="bar"><span class="small">開啟 #4</span><div class="track"><div class="fill" style="--w:100%"></div></div><span class="n">21.00%</span></div>
+          <div class="bar"><span class="small">開啟 #5</span><div class="track"><div class="fill" style="--w:75.24%"></div></div><span class="n">15.80%</span></div>
+        </div>
+        <p class="table-cap"><b>表三</b>靜態捕捉效率原始量測數據（電場關閉 n=3，標準差 0.25%；電場開啟 n=5，標準差 4.52%）</p>
+      </div>
+      <figure class="reveal d1">
+        <div class="frame"><img src="images/fig14.jpg" alt="靜態捕捉測試後銅片極板吸附碳粉" loading="lazy"></div>
+        <figcaption><b>圖十四</b>靜態捕捉測試後銅片極板吸附碳粉之情形</figcaption>
+      </figure>
+    </div>
+
+    <div class="grid g3 mt-m">
+      <div class="card reveal"><div class="mega" style="font-size:clamp(48px,6vw,72px)">−68<span class="u">%</span></div><p class="small mt-s">懸停高度 1→5 cm，核心面積由 144.27 降至 46.00 cm²，與 E = V/d 之衰減趨勢一致（表四）。</p></div>
+      <div class="card reveal d1"><div class="mega" style="font-size:clamp(48px,6vw,72px)">&lt;2<span class="u">%</span></div><p class="small mt-s">左／中／右三通道核心面積差異，電場在通道橫向分布均勻（表五）。</p></div>
+      <div class="card reveal d2"><div class="mega" style="font-size:clamp(48px,6vw,72px)">d<sup style="font-size:.45em">−0.71</sup></div><p class="small mt-s">實測核心面積衰減指數，較理想平行板 d⁻¹ 平緩，源於有限尺寸電極之近場邊緣效應（表九）。</p></div>
+    </div>
+    <div class="grid g2 mt-s">
+      <figure class="reveal"><div class="frame"><img src="images/fig13.png" alt="ImageJ 影像分析流程" loading="lazy"></div><figcaption><b>圖十三</b>ImageJ 影像分析流程示意（以懸停高度 5 cm 為例）</figcaption></figure>
+      <figure class="reveal d1"><div class="frame"><img src="images/fig15.png" alt="核心面積隨懸停高度與時間之變化" loading="lazy"></div><figcaption><b>圖十五</b>核心面積隨 (a) 懸停高度與 (b) 懸停時間之變化趨勢</figcaption></figure>
+    </div>
+
+    <!-- 動態細節 -->
+    <div class="mt-l">
+      <h3 class="reveal">動態測試：越貼近輪胎，不一定越好</h3>
+      <p class="muted reveal" style="max-width:780px">初期測試觀察到「水平 1 cm 之沉積量反低於 3 cm 與 5 cm」——裝置過於貼近胎面時，粉塵尚未擴散至捕捉高度即已通過，且仍處於輪胎旋轉拖曳之邊界層流內。<strong>放置位置須依實際擴散包絡線決定</strong>，這是本研究建立「粉塵擴散包絡線量測法」的關鍵發現。</p>
+      <div class="grid g2 mt-s">
+        <figure class="reveal"><div class="frame dark"><img src="images/fig18.png" alt="粉塵擴散範圍示意" loading="lazy"></div><figcaption><b>圖十八</b>粉塵擴散範圍示意（水平 0–73 cm，沉積量最多處 27 cm，寬度約 21 cm）</figcaption></figure>
+        <figure class="reveal d1"><div class="frame"><img src="images/fig19.png" alt="粉塵雲上緣擴散包絡線" loading="lazy"></div><figcaption><b>圖十九</b>粉塵雲上緣擴散包絡線與水平距離之關係（水平 30 cm 以內為示意）</figcaption></figure>
+      </div>
+
+      <div class="grid g2 mt-m">
+        <div class="reveal">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>測試次別</th><th class="num">10 s</th><th class="num">20 s</th><th class="num">30 s</th><th class="num">整體效率</th></tr></thead>
+              <tbody>
+                <tr><td>第 1 次</td><td class="num">25.0%</td><td class="num">27.3%</td><td class="num">29.4%</td><td class="num">27.8%</td></tr>
+                <tr><td>第 2 次</td><td class="num">22.2%</td><td class="num">23.5%</td><td class="num">24.5%</td><td class="num">23.7%</td></tr>
+                <tr><td>第 3 次</td><td class="num">30.7%</td><td class="num">29.2%</td><td class="num">28.6%</td><td class="num">29.2%</td></tr>
+                <tr><td><strong>平均</strong></td><td class="num"><span class="hl">26.0%</span></td><td class="num"><span class="hl">26.6%</span></td><td class="num"><span class="hl">27.5%</span></td><td class="num"><span class="hl">26.9%</span></td></tr>
+                <tr><td>標準差</td><td class="num">4.3%</td><td class="num">2.9%</td><td class="num">2.6%</td><td class="num">2.9%</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="table-cap"><b>表八</b>350 RPM 下各次動態測試之獨立捕捉效率（裝置位置：水平 25 cm、垂直 0 cm）</p>
+        </div>
+        <figure class="reveal d1"><div class="frame"><img src="images/fig20.png" alt="各運轉時間之平均粉塵重量與集塵器吸附重量" loading="lazy"></div><figcaption><b>圖二十</b>350 RPM 下各運轉時間三次測試之平均粉塵重量與集塵器吸附重量</figcaption></figure>
+      </div>
+      <div class="grid g2 mt-s">
+        <figure class="reveal"><div class="frame"><img src="images/fig17.jpg" alt="粉塵於收集面之實際沉積情形" loading="lazy"></div><figcaption><b>圖十七</b>粉塵於收集面之實際沉積情形</figcaption></figure>
+        <div class="note reveal d1" style="align-self:start"><strong>兩種效率不宜直接比較。</strong>靜態測試於封閉艙體內將全部粉塵導入極板通道；動態測試於開放環境中進行，分母包含未進入裝置捕捉範圍之粉塵。兩者粉塵產生機制、流場條件與效率定義均不同，僅能各自作為對應情境下之獨立指標。</div>
+      </div>
+    </div>
+
+    <!-- 質譜 -->
+    <div class="split mt-l">
+      <div class="reveal">
+        <h3>從「抓到多少」<br>到「抓到的是什麼」</h3>
+        <p class="muted">動態摩擦測試取得之粉塵樣本，以深色玻璃罐盛裝、冷藏，並於採集後 24 小時內完成質譜測定。樣品 1 之精確質量與同位素型態兩項證據均與 <strong>6PPD</strong> 相符，初步支持本裝置所攔截微粒與真實 TRWP 具化學關聯性。</p>
+        <p class="small mt-s">＊目前尚缺乏 6PPD 真品標準品進行同批次比對，尚無法完全排除其他同分子量化合物之可能性，為後續補強重點。</p>
+      </div>
+      <figure class="reveal d1">
+        <div class="frame"><img src="images/fig21.png" alt="樣品1之6PPD實測同位素分佈與理論值比對" loading="lazy"></div>
+        <figcaption><b>圖二十一</b>樣品 1 之 6PPD 實測同位素分佈與理論值比對結果（質量誤差 2.98 ppm）</figcaption>
+      </figure>
+    </div>
+
+    <!-- 理論 vs 實測 -->
+    <div class="mt-l reveal">
+      <h3>誠實面對差距：理論 vs. 實測</h3>
+      <div class="table-wrap mt-s">
+        <table>
+          <thead><tr><th>比較項目</th><th>理論／文獻預估</th><th>本研究實測</th><th>差異說明</th></tr></thead>
+          <tbody>
+            <tr><td>電場強度衰減指數</td><td>E ∝ d⁻¹（理想平行板）</td><td><span class="hl">核心面積 ∝ d⁻⁰·⁷¹</span></td><td class="muted">近場邊緣效應致衰減較緩</td></tr>
+            <tr><td>靜態捕捉效率</td><td>工業 ESP 約 90–99.9%</td><td><span class="hl">16.29%</span></td><td class="muted">極板面積與滯留時間不足</td></tr>
+            <tr><td>動態捕捉效率</td><td>文獻原型 60–80%</td><td><span class="hl">約 27%</span></td><td class="muted">開放流場、未加裝導流罩</td></tr>
+            <tr><td>6PPD 精確質量</td><td>268.1934 Da</td><td><span class="hl">268.1926 Da</span></td><td class="muted">誤差 2.98 ppm，符合門檻</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-cap"><b>表九</b>理論預估值與實驗量測值之比較。差異來源：僅四片銅片、有效面積與滯留時間有限；動態測試未加導流罩（擴散達 73 cm 遠大於捕捉截面）；放置位置僅經單點驗證——同時也指出了後續提升效率的具體方向。</p>
+    </div>
+  </div>
+</section>
+
+<!-- 過場句 -->
+<div class="statement" style="background:var(--bg-2)">
+  <div class="wrap">
+    <p class="reveal">將微粒攔截於源頭、<br>阻斷其進入逕流之途徑——<br><span class="hl">本身即是最大的環境效益。</span></p>
+  </div>
+</div>
+
+<!-- ================= 6. 未來願景 ================= -->
+<section id="vision">
+  <div class="wrap">
+    <div class="eyebrow reveal">05 — Vision</div>
+    <h2 class="reveal">法規與市場，<br>正在往同一個方向走</h2>
+
+    <div class="big-stat" style="border-top:0;padding-top:0">
+      <div class="reveal"><div class="mega accent" style="font-size:clamp(64px,10vw,130px)">Euro 7</div></div>
+      <div class="reveal d1">
+        <h3>全球首例針對非廢氣排放的車輛法規</h3>
+        <p class="muted">歐盟第七期排放標準已於 2024 年正式通過，首度將煞車微粒排放與輪胎磨耗率納入車輛型式認證規範，為本裝置指出潛在之應用切入點。</p>
+      </div>
+    </div>
+
+    <div class="grid g3 mt-s">
+      <div class="card reveal"><h4>ESG 永續報告</h4><p class="small">大型物流車隊或客運業者加裝此類裝置，有助於納入企業 ESG 永續報告，未來或可對應政策補貼或碳排放抵換額度。</p></div>
+      <div class="card reveal d1"><h4>數據加值服務</h4><p class="small">加入粉塵重量感測器後，長期磨耗數據可回傳車廠或輪胎廠，作為預測性保養（提醒換胎）或路面品質分析依據。</p></div>
+      <div class="card reveal d2"><h4>商用車隊優先導入</h4><p class="small">軸重高、里程長、單車 TRWP 排放量遠高於轎車；輪拱空間與車載電力（通常 24 V）較寬裕；固定調度站便於標準化清理維護。</p></div>
+    </div>
+
+    <div class="split mt-l">
+      <div class="reveal">
+        <h3>應用對象與固定方式</h3>
+        <p class="muted" style="font-size:15px"><strong>汽車</strong>：以公車為例，安裝於車身後方鈑件底部；後輪處可設計升降機構，平坦路面降下以縮短與輪胎距離，遇上坡或起伏時升起。</p>
+        <p class="muted" style="font-size:15px"><strong>機車</strong>：國內機車數量龐大；輪胎更換頻率較高，較新之輪胎可釋出含 6PPD 較多之磨耗微粒。後輪支架延伸至後輪後方，概念近似後土除（擋泥板）。</p>
+        <p class="muted" style="font-size:15px"><strong>腳踏車</strong>：安裝方式最簡單，惟仍需解決供電問題；可採與機車相同之支架方式。</p>
+      </div>
+      <div class="placeholder reveal d1">
+        [機車後輪集塵器支架實裝照片]
+        <small>報告 §5「應用對象與集塵器固定方式」提及之實裝展示平台支架，報告中無對應圖號</small>
+      </div>
+    </div>
+
+    <div class="mt-l">
+      <h3 class="reveal">取之於路，用之於路</h3>
+      <p class="muted reveal" style="max-width:780px">回收之粉塵不宜當作一般垃圾丟棄，以免 6PPD 滲入土壤與地下水。</p>
+      <div class="loop reveal d1">
+        <span>車輛定期保養時抽換極板匣</span><b>→</b><span>集中送交專業處理</span><b>→</b><span>高溫裂解：回收碳黑與裂解油</span><b>／</b><span>混入鋪路瀝青包覆封裝</span>
+      </div>
+    </div>
+
+    <div class="mt-l">
+      <h3 class="reveal">待解決之工程課題與對策 <span class="cite">表十</span></h3>
+      <div class="mt-s">
+        <div class="issue reveal"><h4>捕捉粉塵回收與二次揚塵抑制</h4><p>可抽出式極板匣，停機後整匣回收；運轉期間電場常開以壓制微粒；另試驗極板塗佈薄層矽油作為黏著介質，以對照組評估其影響（須留意反電暈 back corona）。</p></div>
+        <div class="issue reveal"><h4>潮濕與異物之運作可靠性</h4><p>雨滴感測模組遇水氣即斷電；進氣口加裝具傾角之迷宮式擋水百葉（慣性分離）；入口不帶電粗網（孔徑 5–10 mm）阻擋落葉砂石；超疏水奈米塗層；集塵盒底部單向排水閥（duckbill valve）。</p></div>
+        <div class="issue reveal"><h4>6PPD 之分離與定量回收</h4><p>「先捕捉、後萃取」：裝置端攔截含 6PPD 之橡膠微粒，離線端依 EPA 標準方法以乙腈萃取定量；下游另設可更換活性碳濾材。</p></div>
+        <div class="issue reveal"><h4>銅片耗材成本與重量優化</h4><p>以金屬沖孔板或編織網取代實心銅片，材料成本與重量可望減少 50% 以上，邊緣放電效應亦有助提升局部電場；材質改為 SUS 304/316 或鋁合金；量產可評估導電塑膠一體射出成型。</p></div>
+      </div>
+    </div>
+
+    <div class="split mt-l" style="align-items:start">
+      <div class="reveal">
+        <h3>未來工作</h3>
+        <ol class="future mt-s">
+          <li>取得負載能力更高之電源與馬達設備，完成多組轉速量測，建立效率與等效車速之關係曲線。</li>
+          <li>依擴散包絡線，以兩階段最佳化（先水平距離、再垂直高度）尋找最佳放置位置。</li>
+          <li>延長運轉時間、增加重複次數，使單次量測質量脫離天平解析度下限。</li>
+          <li>比較不同砂紙目數與柏油之產塵特性；取得 6PPD 真品標準品比對，嘗試建立同位素稀釋定量方法。</li>
+          <li>導入絕緣性替代粉體作為對照組，驗證對導電微粒之選擇性捕捉能力。</li>
+        </ol>
+      </div>
+      <div>
+        <h3 class="reveal">對應 SDGs</h3>
+        <div class="sdg mt-s" style="grid-template-columns:1fr">
+          <div class="card reveal d1" style="--sdg:#4c9f38"><div class="bar-top"></div>
+            <div style="display:flex;gap:20px;align-items:center"><div class="n">3</div><div><div class="role">研究主題</div><h4>良好健康與福祉</h4><p class="small">減少有害物質暴露所致之健康風險</p></div></div></div>
+          <div class="card reveal d2" style="--sdg:#fd9d24"><div class="bar-top"></div>
+            <div style="display:flex;gap:20px;align-items:center"><div class="n">11</div><div><div class="role">研究主題</div><h4>永續城市與社區</h4><p class="small">改善都市空氣品質</p></div></div></div>
+          <div class="card reveal d3" style="--sdg:#f36d25"><div class="bar-top"></div>
+            <div style="display:flex;gap:20px;align-items:center"><div class="n">9</div><div><div class="role">解決手段</div><h4>產業、創新與基礎建設</h4><p class="small">產業技術創新</p></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. 團隊 ================= -->
+<section id="team" class="alt">
+  <div class="wrap">
+    <div class="eyebrow reveal">06 — Team</div>
+    <h2 class="reveal">團隊</h2>
+    <p class="lead reveal">中原大學機械系 專題團隊</p>
+    <div class="team mt-m">
+      <div class="member prof reveal">
+        <div class="avatar">杜</div>
+        <div class="name">杜哲怡</div>
+        <div class="role">專題指導教授</div>
+        <p>中原大學機械系</p>
+      </div>
+      <div class="member reveal d1">
+        <div class="avatar">陳</div>
+        <div class="name">陳睿瑀</div>
+        <div class="role">專題生</div>
+        <p>3D CAD 模型設計與建模（Inventor，含集塵盒回收機構）、高壓電路佈線與絕緣實作、雨滴感測器安全保護模組之電路設計與程式實作、實驗設計、數據分析、統整專題書面報告。</p>
+      </div>
+      <div class="member reveal d2">
+        <div class="avatar">李</div>
+        <div class="name">李恩</div>
+        <div class="role">專題生</div>
+        <p>輪轂馬達系統模組之架設、高壓電路佈線、升壓模組焊接，以及系統絕緣與防漏電工程實作。</p>
+      </div>
+      <div class="member reveal d3">
+        <div class="avatar">林</div>
+        <div class="name">林子鈞</div>
+        <div class="role">專題生</div>
+        <p>靜態與動態實驗架構規劃、測試流程擬定、質譜儀操作與數據分析。</p>
+      </div>
+    </div>
+    <div class="note mt-m reveal"><strong>致謝</strong>　感謝中原大學化學系蔡祐輔教授於質譜鑑定階段，慷慨提供 Bruker microTOF II 高解析飛行時間質譜儀供本團隊進行捕捉樣本之同位素分佈比對。</div>
+  </div>
+</section>
+
+<!-- ================= 8. FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="big reveal">Capture it<br>at the <span>source.</span></div>
+    <p class="muted mt-s reveal">主動式輪胎磨損微粒（TRWP）靜電捕捉裝置 · 中原大學機械系<br>專題指導教授：杜哲怡　專題生：陳睿瑀、李恩、林子鈞</p>
+    <p class="small reveal">關鍵字：輪胎磨損微粒、靜電集塵、輪轂馬達、高壓電場、6PPD、質譜分析</p>
+
+    <details class="mt-m">
+      <summary>參考文獻（書面報告第 7 節，共 22 筆）</summary>
+      <ol>
+        <li>F. Sommer et al., "Tire abrasion as a major source of microplastics in the environment," Aerosol Air Qual. Res., 2018.</li>
+        <li>T. De Oliveira et al., "Realistic assessment of tire and road wear particle emissions…," J. Hazard. Mater., 2023.</li>
+        <li>OECD, Non-exhaust Particulate Emissions from Road Transport, OECD Publishing, 2020.</li>
+        <li>J. Boucher and D. Friot, "Primary microplastics in the oceans: A global evaluation of sources," IUCN, 2017.</li>
+        <li>B. Du et al., "First report on the occurrence of 6PPD and 6PPD-quinone … in human urine from South China," Environ. Sci. Technol. Lett., 2022.</li>
+        <li>Z. Tian et al., "A ubiquitous tire rubber-derived chemical induces acute mortality in coho salmon," Science, 2021.</li>
+        <li>林淑靜, "車輛非廢氣排放顆粒之法制問題研析," 立法院議題研析, 2025.</li>
+        <li>EARPA, "Non-Exhaust particle emissions – Gaps and research needs," Position Paper, 2026.</li>
+        <li>DEFRA, "Review of PM2.5 reduction technologies for on road transport," 2025.</li>
+        <li>POLIS Network, "Review: Mitigation measures to reduce tire and road wear particles," 2023.</li>
+        <li>C. P. H. Cheng et al., "Particulate collecting device," WIPO Patent WO2021152331A1, 2021.</li>
+        <li>周士傑, "靜電除塵器(EP)電場作用下之粉塵行徑模式研究," 國立成功大學碩士論文, 2010.</li>
+        <li>United Nations, Transforming Our World: The 2030 Agenda for Sustainable Development, 2015.</li>
+        <li>梁惠明, "中研院新研究：微塑膠愈小愈毒 毒性影響後代繁衍," 中時新聞網, 2020.</li>
+        <li>R. F. Lane et al., "Tire-derived contaminants 6PPD and 6PPD-Q…," Chemosphere, 2024.</li>
+        <li>H. N. Zhao et al., "Transformation products of tire rubber antioxidant 6PPD…," Environ. Sci. Technol., 2023.</li>
+        <li>U.S. EPA, "Draft Method 1634: Determination of 6PPD-quinone in aqueous matrices…," 2024.</li>
+        <li>U.S. EPA, "Air pollution control technology fact sheet: Dry ESP—Wire-plate type," 2003.</li>
+        <li>Imperial College London, "World's first device to capture harmful tyre particles invented by students," 2020.</li>
+        <li>Advanced Propulsion Centre UK, "The Tyre Collective: Old tyre, new tyre…," 2025.</li>
+        <li>European Parliament and Council, Regulation (EU) 2024/1257 (Euro 7), 2024.</li>
+        <li>California DTSC, "Product–chemical profile for motor vehicle tires containing 6PPD," 2021.</li>
+      </ol>
+    </details>
+    <p class="cite mt-m">© 中原大學機械系 · 主動式 TRWP 靜電捕捉裝置專題團隊 · 所有數據與圖片取自專題書面報告 v23</p>
+  </div>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true"><img alt=""><p></p></div>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- 捲動淡入（舊瀏覽器不支援時直接全部顯示） ---- */
+  if(!('IntersectionObserver' in window)){
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(!e.isIntersecting) return;
+        e.target.classList.add('in');
+        e.target.querySelectorAll('[data-count]').forEach(countUp);
+        if(e.target.matches('[data-count]')) countUp(e.target);
+        io.unobserve(e.target);
+      });
+    },{threshold:.15, rootMargin:'0px 0px -6% 0px'});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }
+
+  /* ---- 數字滾動 ---- */
+  function countUp(el){
+    if(el.dataset.done) return; el.dataset.done=1;
+    const end=parseFloat(el.dataset.count), dec=+el.dataset.dec||0;
+    if(reduce){el.textContent=end.toFixed(dec);return;}
+    const dur=1600, t0=performance.now();
+    (function tick(t){
+      const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,4);
+      el.textContent=(end*e).toFixed(dec);
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+  }
+
+  /* ---- 導覽列 / 進度條 / 目前段落 ---- */
+  const nav=document.getElementById('nav'), bar=document.getElementById('progress');
+  const links=[...document.querySelectorAll('.nav ul a')];
+  const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+  function onScroll(){
+    const y=scrollY, h=document.documentElement.scrollHeight-innerHeight;
+    nav.classList.toggle('scrolled',y>40);
+    bar.style.width=(h>0?y/h*100:0)+'%';
+    let cur=-1; secs.forEach((s,i)=>{ if(s && s.getBoundingClientRect().top<innerHeight*.4) cur=i; });
+    links.forEach((a,i)=>a.classList.toggle('active',i===cur));
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  /* ---- 圖片燈箱 ---- */
+  const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbCap=lb.querySelector('p');
+  document.querySelectorAll('figure .frame img').forEach(img=>{
+    img.addEventListener('click',()=>{
+      lbImg.src=img.src; lbImg.alt=img.alt;
+      const cap=img.closest('figure').querySelector('figcaption');
+      lbCap.textContent=cap?cap.textContent:''; lb.classList.add('open');
+    });
+  });
+  lb.addEventListener('click',()=>lb.classList.remove('open'));
+  addEventListener('keydown',e=>{ if(e.key==='Escape') lb.classList.remove('open'); });
+
+  /* =========================================================
+     ESP 電場模擬器（原理示意）
+     y 方向偏移 = ½·a·t²，a ∝ (q/m)·V/d；以 15 kV / 17 mm 為基準
+     ========================================================= */
+  (function(){
+    const cv=document.getElementById('espCanvas'); if(!cv) return;
+    const ctx=cv.getContext('2d');
+    const ACC=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()||'#ff7a1a';
+    const vIn=document.getElementById('vIn'), dIn=document.getElementById('dIn');
+    const V0=15, D0=17, E0=V0/D0, TRANSIT=2.4; // 粒子穿越極板所需秒數
+    let W,H,s,ps=[],stuck=[],type='carbon',last=0,visible=false;
+
+    function size(){
+      const dpr=Math.min(devicePixelRatio||1,2);
+      W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      s=(H-90)/30; // px per mm，讓 30 mm 剛好放得下
+      stuck=[];
+    }
+    const V=()=>+vIn.value, D=()=>+dIn.value;
+    function geom(){
+      const gap=D()*s, cy=H/2+6, top=cy-gap/2, bot=cy+gap/2, pl=W*.14, pr=W*.9;
+      return {gap,top,bot,pl,pr,L:pr-pl};
+    }
+    function spawn(g,init){
+      let kind=type==='mix'?(Math.random()<.5?'carbon':'mineral'):type;
+      const c=kind==='carbon';
+      return {x:init?-Math.random()*W*1.1:-5-Math.random()*40, y:g.top+4+Math.random()*(g.gap-8), vy:0,
+              qm:c?(.7+Math.random()*.6):(.04+Math.random()*.06), r:c?1.8+Math.random()*1.2:3+Math.random()*1.5, c};
+    }
+    function update(){
+      document.getElementById('vOut').textContent=V().toFixed(1)+' kV';
+      document.getElementById('dOut').textContent=D()+' mm';
+      const E=V()/D();
+      document.getElementById('eOut').textContent=E.toFixed(2);
+      document.getElementById('fOut').textContent=Math.round(E/E0*100)+'%';
+      stuck=[];
+    }
+    vIn.addEventListener('input',update); dIn.addEventListener('input',update);
+    document.getElementById('espReset').addEventListener('click',()=>{vIn.value=V0;dIn.value=D0;update();});
+    document.querySelectorAll('#pType button').forEach(b=>b.addEventListener('click',()=>{
+      type=b.dataset.t; document.querySelectorAll('#pType button').forEach(x=>x.setAttribute('aria-pressed',x===b)); ps=[]; stuck=[];
+    }));
+
+    // 以基準設定下碳黑粒子可偏移約 0.55 倍基準間距來定比例（純示意）
+    const accel=()=>1.1*(D0*s)/(E0*TRANSIT*TRANSIT)*(V()/D());
+
+    // 減少動態效果時：改畫靜態軌跡線
+    function drawStatic(){
+      const g=geom(), vx=g.L/TRANSIT, acc=accel();
+      scene(g);
+      const kinds=type==='mix'?[['carbon',1],['mineral',.07]]:[[type,type==='carbon'?1:.07]];
+      kinds.forEach(([k,qm],ki)=>{
+        const n=9;
+        for(let i=0;i<n;i++){
+          let x=0,y=g.top+6+(g.gap-12)*(i+(ki?.5:0))/n,vy=0,hit=false;
+          ctx.beginPath(); ctx.moveTo(x,y);
+          while(x<W){ x+=vx*.01; if(x>g.pl&&x<g.pr){vy+=acc*qm*.01; y+=vy*.01;}
+            if(y>=g.bot-2&&x>g.pl&&x<g.pr){y=g.bot-2;hit=true;ctx.lineTo(x,y);break;} ctx.lineTo(x,y); }
+          ctx.strokeStyle=k==='carbon'?'rgba(233,240,236,.55)':'rgba(201,169,120,.6)'; ctx.lineWidth=1.3; ctx.stroke();
+          if(hit){ctx.beginPath();ctx.arc(x,y,3,0,6.283);ctx.fillStyle=k==='carbon'?ACC:'#c9a978';ctx.fill();}
+        }
+      });
+    }
+
+    function scene(g){
+      const E=V()/D();
+      ctx.clearRect(0,0,W,H);
+
+      // 電場線
+      const alpha=Math.min(.5,.08+E/E0*.25);
+      ctx.strokeStyle=`rgba(120,160,220,${alpha})`; ctx.lineWidth=1;
+      for(let x=g.pl+18;x<g.pr;x+=36){ctx.beginPath();ctx.moveTo(x,g.top+6);ctx.lineTo(x,g.bot-6);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(x-3,g.bot-11);ctx.lineTo(x,g.bot-6);ctx.lineTo(x+3,g.bot-11);ctx.stroke();}
+      // 極板
+      ctx.fillStyle=V()>0?ACC:'#5f7268'; ctx.fillRect(g.pl,g.top-6,g.L,6);
+      ctx.fillStyle='#8a9a92'; ctx.fillRect(g.pl,g.bot,g.L,6);
+      ctx.font='12px "Noto Sans TC",sans-serif'; ctx.fillStyle='#93a69c';
+      ctx.fillText(`正極板 +${V().toFixed(1)} kV`,g.pl,g.top-14);
+      ctx.fillText('負極板（接地）',g.pl,g.bot+22);
+      // 間距標示
+      ctx.strokeStyle='#5f7268'; ctx.beginPath(); ctx.moveTo(g.pr+14,g.top); ctx.lineTo(g.pr+14,g.bot); ctx.stroke();
+      ctx.fillText(`d=${D()}`,g.pr+6,g.top-14);
+      ctx.fillStyle='#5f7268'; ctx.fillText('氣流 →',8,g.top-14);
+    }
+
+    function draw(t){
+      if(reduce){ drawStatic(); return; }
+      const dt=Math.min(.05,(t-last)/1000||0); last=t;
+      const g=geom(), vx=g.L/TRANSIT, acc=accel();
+      scene(g);
+
+      // 粒子
+      const target=type==='mineral'?30:46;
+      const fresh=ps.length===0;
+      while(ps.length<target) ps.push(spawn(g,fresh));
+      ps.forEach((p,i)=>{
+        p.x+=vx*dt;
+        if(p.x>g.pl && p.x<g.pr){ p.vy+=acc*p.qm*dt; p.y+=p.vy*dt; }
+        if(p.y>=g.bot-p.r && p.x>g.pl && p.x<g.pr){ stuck.push({x:p.x,c:p.c,r:p.r}); ps[i]=spawn(g); return; }
+        if(p.x>W+10) ps[i]=spawn(g);
+      });
+      if(stuck.length>220) stuck.splice(0,stuck.length-220);
+      stuck.forEach(q=>{ctx.beginPath();ctx.arc(q.x,g.bot-q.r*.6,q.r,0,6.283);ctx.fillStyle=q.c?ACC:'#c9a978';ctx.fill();});
+      ps.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,6.283);ctx.fillStyle=p.c?'#e9f0ec':'#c9a978';ctx.fill();});
+      if(visible && !reduce) requestAnimationFrame(draw);
+    }
+    new IntersectionObserver(es=>{ const was=visible; visible=es[0].isIntersecting; if(visible&&!was){last=performance.now();requestAnimationFrame(draw);} }).observe(cv);
+    size(); update(); addEventListener('resize',()=>{size(); if(reduce) drawStatic();});
+    if(reduce){
+      [vIn,dIn].forEach(el=>el.addEventListener('input',drawStatic));
+      document.querySelectorAll('#pType button, #espReset').forEach(b=>b.addEventListener('click',drawStatic));
+    }
+  })();
+
+  /* =========================================================
+     雨滴感測器模擬器：邏輯對應附錄 A 程式碼
+     ========================================================= */
+  (function(){
+    const root=document.getElementById('rainSim'); if(!root) return;
+    const DRY_DELAY=5000, TICK=300;
+    const S={wet:false,manual:true,crashed:false,power:false,everWet:false,lastWet:0,bootAt:0};
+    const serial=document.getElementById('serial');
+    const nd=n=>root.querySelector(`[data-n="${n}"]`);
+
+    function log(msg,cls){
+      const line=document.createElement('div');
+      const ts=new Date().toTimeString().slice(0,8);
+      line.innerHTML=`<span class="t">${ts}</span><span class="${cls||''}"></span>`;
+      line.lastChild.textContent=msg;
+      serial.appendChild(line);
+      while(serial.children.length>9) serial.removeChild(serial.firstChild);
+    }
+    function boot(){
+      S.power=false; S.everWet=false; S.lastWet=0; S.bootAt=performance.now()+1000;
+      serial.innerHTML=''; log('=== 系統啟動 ===');
+      render();
+    }
+    function tick(){
+      const now=performance.now();
+      if(S.crashed || now<S.bootAt){ render(); return; }
+      if(S.wet){ S.lastWet=now; S.everWet=true; S.power=false; log('偵測到水 → 繼電器斷電','wet'); }
+      else if(!S.everWet || now-S.lastWet>DRY_DELAY){ S.power=true; log('乾燥 → 繼電器通電','dry'); }
+      else { log('剛停雨，等待中...','wait'); }
+      render();
+    }
+    function render(){
+      const relayClosed=!S.crashed && S.power;        // NO 接點：線圈失磁即斷開（fail-safe）
+      const hv=S.manual && relayClosed;               // 手動開關串接在 COM 前，最高優先權
+      nd('sw').className='nd'+(S.manual?' on':' bad cut');
+      nd('relay').className='nd'+(S.manual&&relayClosed?' on':(relayClosed?'':' cut'));
+      nd('boost').className='nd'+(hv?' on':'');
+      nd('plate').className='nd'+(hv?' on':'');
+      nd('sensor').className='nd sig'+(S.wet?' bad':' on');
+      nd('sensor').textContent=S.wet?'雨滴感測器 D0：有水':'雨滴感測器 D0：乾燥';
+      nd('mcu').className='nd sig'+(S.crashed?' bad':' on');
+      nd('mcu').textContent=S.crashed?'Arduino：當機':'Arduino：運作中';
+      nd('in').className='nd sig'+(relayClosed?' on':'');
+      document.getElementById('hvState').classList.toggle('on',hv);
+      document.getElementById('hvText').textContent=hv?'ON':'OFF';
+      document.getElementById('relayText').textContent=relayClosed?'吸合（NO 導通）':'釋放（NO 斷開）';
+      let remain=0;
+      if(!S.crashed && !S.wet && S.everWet) remain=Math.max(0,DRY_DELAY-(performance.now()-S.lastWet));
+      document.getElementById('delayText').textContent=remain>0?(remain/1000).toFixed(1)+' s':'—';
+      document.getElementById('delayBar').style.width=(remain>0?(1-remain/DRY_DELAY)*100:0)+'%';
+      let note;
+      if(!S.manual) note='手動開關關閉：電源在實體電路上直接被切斷。Arduino 仍照常輸出，但這個斷電不會出現在序列埠。';
+      else if(S.crashed) note='Arduino 當機或訊號線鬆脫：繼電器線圈失磁，NO 接點自動彈開，高壓關閉（fail-safe）。';
+      else if(performance.now()<S.bootAt) note='開機時 setup() 先把繼電器設為斷電，確保高壓不會誤啟動。';
+      else if(S.wet) note='偵測到降雨：繼電器即時斷電，15 kV 電場關閉。';
+      else if(remain>0) note='剛停雨：須等 DRY_DELAY 屆滿、水氣蒸發後才恢復供電。';
+      else note='乾燥且手動開關開啟：繼電器吸合，15 kV 電場正常運作。';
+      document.getElementById('rainNote').textContent=note;
+    }
+    function seg(id,fn){
+      root.querySelectorAll(`#${id} button`).forEach(b=>b.addEventListener('click',()=>{
+        root.querySelectorAll(`#${id} button`).forEach(x=>x.setAttribute('aria-pressed',x===b)); fn(b.dataset.v);
+      }));
+    }
+    seg('wx',v=>{S.wet=v==='wet'; tick();});
+    seg('mcu',v=>{ const was=S.crashed; S.crashed=v==='crash'; if(was&&!S.crashed) boot(); else render(); });
+    const m=document.getElementById('manual');
+    m.addEventListener('click',()=>{S.manual=!S.manual; m.setAttribute('aria-checked',S.manual); render();});
+    document.getElementById('reboot').addEventListener('click',()=>{
+      S.crashed=false; root.querySelectorAll('#mcu button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.v==='ok')); boot();
+    });
+    let timer=null;
+    new IntersectionObserver(es=>{
+      if(es[0].isIntersecting){ if(!timer){ boot(); timer=setInterval(tick,TICK);} }
+      else if(timer){ clearInterval(timer); timer=null; }
+    }).observe(root);
+  })();
+
+  /* ---- Hero 微粒動畫：粒子由左流入，靠近中央「極板」時被吸附 ---- */
+  const cv=document.getElementById('particles'), ctx=cv.getContext('2d');
+  const css=getComputedStyle(document.documentElement);
+  const ACC=css.getPropertyValue('--accent').trim()||'#ff7a1a';
+  let W,H,ps=[],plates=[];
+  function size(){
+    const dpr=Math.min(devicePixelRatio||1,2);
+    W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const x0=W*(W<700?.55:.62), gap=Math.max(26,W*.028);
+    plates=[0,1,2,3].map(i=>x0+i*gap);
+    const n=Math.round(Math.min(160,W*H/9000));
+    ps=Array.from({length:n},()=>spawn(true));
+  }
+  function spawn(init){
+    return {x:init?Math.random()*W:-10, y:Math.random()*H, vx:.4+Math.random()*1.1, vy:(Math.random()-.5)*.3,
+            r:.6+Math.random()*1.8, charged:Math.random()<.7, stuck:false, life:0};
+  }
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    const top=H*.22, bot=H*.82;
+    plates.forEach(px=>{
+      const g=ctx.createLinearGradient(0,top,0,bot); g.addColorStop(0,'rgba(255,122,26,0)'); g.addColorStop(.5,'rgba(255,122,26,.35)'); g.addColorStop(1,'rgba(255,122,26,0)');
+      ctx.fillStyle=g; ctx.fillRect(px-1,top,2,bot-top);
+    });
+    ps.forEach((p,i)=>{
+      if(!p.stuck){
+        if(p.charged && p.y>top && p.y<bot){
+          let nearest=plates.reduce((a,b)=>Math.abs(b-p.x)<Math.abs(a-p.x)?b:a);
+          const dx=nearest-p.x;
+          if(Math.abs(dx)<60){ p.vx+=dx*.0025; p.vx*=.97; if(Math.abs(dx)<1.5){p.stuck=true;p.x=nearest;} }
+        }
+        p.x+=p.vx; p.y+=p.vy;
+      } else { p.life++; if(p.life>240) ps[i]=spawn(false); }
+      if(p.x>W+10||p.y<-10||p.y>H+10) ps[i]=spawn(false);
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283);
+      ctx.fillStyle=p.stuck?ACC:(p.charged?'rgba(233,240,236,.55)':'rgba(147,166,156,.35)');
+      ctx.fill();
+    });
+    if(!reduce) requestAnimationFrame(frame);
+  }
+  size(); addEventListener('resize',size); frame();
+})();
+</script>
+</body>
+</html>
