@@ -126,11 +126,10 @@ figcaption b{color:var(--accent);font-family:var(--font-mono);font-weight:500;ma
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,var(--bg));z-index:0;pointer-events:none}
 .hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:center}
 .hero-photo .frame{box-shadow:0 30px 80px -20px rgba(255,122,26,.35),0 0 0 1px rgba(255,122,26,.35)}
-.hero-photo img{aspect-ratio:1/1;object-fit:cover}
+.hero-photo{max-width:400px;justify-self:end;width:100%}
 @media(max-width:860px){
   .hero-grid{grid-template-columns:minmax(0,1fr);gap:28px}
-  .hero-photo{max-width:420px}
-  .hero-photo img{aspect-ratio:4/3;object-position:center 40%}
+  .hero-photo{max-width:260px;justify-self:start}
 }
 .hero h1 .nw{white-space:nowrap}
 .hero h1{font-size:clamp(30px,4.9vw,76px);line-height:1.05;font-weight:900;letter-spacing:-.02em;max-width:14em}
@@ -189,6 +188,34 @@ figcaption b{color:var(--accent);font-family:var(--font-mono);font-weight:500;ma
 .lane-label i{width:8px;height:8px;border-radius:50%}
 .circuit .link{font-family:var(--font-mono);font-size:12px;color:var(--faint);margin:14px 0 14px 12px;padding-left:14px;border-left:1px dashed var(--faint)}
 .circuit-notes{border-top:1px solid var(--line);padding-top:16px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cdiag{display:block;width:100%;height:auto}
+.cdiag-tall{display:none;max-width:420px;margin:0 auto}
+@media(max-width:700px){.cdiag-wide{display:none}.cdiag-tall{display:block}}
+.cdiag text{font-family:var(--font-sans);text-anchor:middle;fill:var(--text)}
+.cdiag .t{font-size:14px;font-weight:700}
+.cdiag .s{font-size:11px;fill:var(--muted)}
+.cdiag .n rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.cdiag .sw rect{stroke:var(--muted)}
+.cdiag .hot rect{stroke:var(--accent)}.cdiag .hot .t{fill:var(--accent)}
+.cdiag .lv rect{stroke:var(--eco)}.cdiag .lv .t{fill:var(--eco)}
+.cdiag .w{stroke:var(--muted);stroke-width:2;fill:none}
+.cdiag .w-hot{stroke:var(--accent)}
+.cdiag .w-5v{stroke:var(--eco);stroke-width:3;fill:none;stroke-linejoin:round}
+.cdiag .w-sig{stroke:var(--eco);stroke-width:1.8;stroke-dasharray:5 4;fill:none}
+.cdiag .ah{fill:var(--muted)}.cdiag .ah-hot{fill:var(--accent)}.cdiag .ah-eco{fill:var(--eco)}
+.cdiag .jn{fill:var(--eco)}
+.cdiag .jn-ring{fill:none;stroke:var(--eco);stroke-width:2;transform-box:fill-box;transform-origin:center;animation:jn 2s ease-out infinite}
+@keyframes jn{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.cdiag .jn-ring{animation:none;opacity:.6}}
+.cdiag .call{font-size:13px;font-weight:700;fill:var(--eco);text-anchor:end}
+.cdiag .lbl{font-size:11px;fill:var(--eco);font-family:var(--font-mono)}
+.clegend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:12.5px;color:var(--muted);margin-top:14px}
+.clegend span{display:inline-flex;align-items:center;gap:8px}
+.clegend i{display:inline-block;width:22px;height:0;border-top:2px solid var(--muted)}
+.clegend .lg-h{border-color:var(--accent)}
+.clegend .lg-5{border-top:3px solid var(--eco)}
+.clegend .lg-s{border-top:2px dashed var(--eco)}
 .code-params{font-family:var(--font-mono);font-size:13px;display:grid;gap:8px}
 .code-params div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:8px}
 .code-params code{color:var(--accent-2)}
@@ -375,8 +402,8 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
         <p class="lead reveal d2" style="margin-top:28px">以 <strong>15 kV 直流高壓電場</strong> 結合 <strong>48 V 輪轂馬達</strong>，在低風阻條件下，於源頭攔截輪胎揚起的導電微粒。</p>
       </div>
       <figure class="hero-photo reveal d3">
-        <div class="frame"><img src="images/fig05.png" alt="靜電集塵裝置雛形：白色 PLA 外殼與四片銅片極板"></div>
-        <figcaption><b>圖五</b>靜電集塵裝置之雛形 · 15 kV / 17 mm</figcaption>
+        <div class="frame dark"><img src="images/hero-device.jpg" alt="裝置整體概念圖：3D 模型，外殼內含四片銅片極板" width="540" height="720"></div>
+        <figcaption><b>概念圖</b>裝置整體 3D 模型（Autodesk Inventor，取自圖十二）</figcaption>
       </figure>
     </div>
 
@@ -462,7 +489,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
         </div>
         <div class="card flaw reveal d3">
           <h4>既有靜電捕捉概念</h4>
-          <p class="small">國際新創團隊（如 The Tyre Collective）已提出靜電捕捉概念與原型，但公開資料中較少完整的高壓電場流場驗證與模組化機構設計細節。</p>
+          <p class="small">國際新創團隊 The Tyre Collective 已提出靜電捕捉概念並取得專利，其原型亦已進行實驗台架測試；惟公開資料中較少完整之高壓電場流場驗證與模組化機構設計細節。</p>
         </div>
       </div>
     </div>
@@ -559,25 +586,95 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
 
     <div class="mt-l">
       <h3 class="reveal">電路架構</h3>
-      <p class="muted reveal" style="max-width:780px">電路由兩條迴路組成：<strong>高壓電力路徑</strong>把市電逐級升到 15 kV 送上極板；<strong>雨滴感測器模組</strong>是獨立的低壓訊號迴路，透過繼電器的 IN 端控制 COM 與 NO 的通斷，下雨時自動切斷高壓。</p>
+      <p class="muted reveal" style="max-width:780px">電路由兩條迴路組成：<strong>高壓電力路徑</strong>把市電逐級升到 15 kV 送上極板；<strong>雨滴感測器模組</strong>是低壓訊號迴路，電源從手動開關後方分出、降壓至 5 V 供應，並透過繼電器的 IN 端控制 COM 與 NO 的通斷，下雨時自動切斷高壓。</p>
       <div class="circuit mt-s reveal d1">
-        <div class="lane">
-          <div class="lane-label"><i style="background:var(--accent)"></i>高壓電力路徑</div>
-          <div class="chain" aria-label="高壓電力路徑">
-            <span>110 V 市電</span><b>→</b><span>變壓器 12 V</span><b>→</b><span>2 A 保險絲</span><b>→</b><span>手動開關</span><b>→</b><span class="relay">繼電器 COM→NO</span><b>→</b><span class="hot">升壓線圈 15 kV</span><b>→</b><span class="hot">銅片極板</span>
-          </div>
-        </div>
-        <div class="link" aria-hidden="true"><span>▲ IN 端控制 COM／NO 通斷</span></div>
-        <div class="lane">
-          <div class="lane-label"><i style="background:var(--eco)"></i>雨滴感測器模組（低壓訊號迴路）</div>
-          <div class="chain signal" aria-label="雨滴感測器訊號迴路">
-            <span>雨滴感測器 D0</span><b>→</b><span>Arduino D2 讀取</span><b>→</b><span>判斷：有水／延遲中／乾燥</span><b>→</b><span>Arduino D7 輸出</span><b>→</b><span class="relay">繼電器 IN</span>
-          </div>
+        <p class="sr-only">電路方塊圖：110 V 市電經變壓器降為 12 V，依序通過 2 A 保險絲、手動開關、繼電器（COM→NO），再由升壓線圈升到 15 kV 送至銅片極板。在手動開關與繼電器之間分出一條線，降壓至 5 V 後供電給雨滴感測器、Arduino 與繼電器模組；雨滴感測器訊號送入 Arduino，Arduino 再由 D7 控制繼電器 IN 端。</p>
+
+        <!-- 桌面版方塊圖 -->
+        <svg class="cdiag cdiag-wide" viewBox="0 0 1000 312" aria-hidden="true">
+          <defs>
+            <marker id="dA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="dH" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-hot" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="dE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="ah-eco" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <!-- 主電力路徑 -->
+          <path class="w" d="M128,67 H146" marker-end="url(#dA)"/>
+          <path class="w" d="M266,67 H284" marker-end="url(#dA)"/>
+          <path class="w" d="M404,67 H422" marker-end="url(#dA)"/>
+          <path class="w" d="M542,67 H590" marker-end="url(#dA)"/>
+          <path class="w w-hot" d="M710,67 H728" marker-end="url(#dH)"/>
+          <path class="w w-hot" d="M848,67 H866" marker-end="url(#dH)"/>
+          <!-- 手動開關後分線 → 降壓 5 V -->
+          <path class="w-5v" d="M567,67 V143" marker-end="url(#dE)"/>
+          <path class="w-5v" d="M567,191 V222 M470,222 H640 M470,222 V248 M640,222 V248"/>
+          <path class="w-5v" d="M470,236 V248" marker-end="url(#dE)"/>
+          <path class="w-5v" d="M640,236 V248" marker-end="url(#dE)"/>
+          <!-- 控制訊號 -->
+          <path class="w-sig" d="M540,273 H608" marker-end="url(#dE)"/>
+          <path class="w-sig" d="M690,250 V96" marker-end="url(#dE)"/>
+          <text class="lbl" x="574" y="266">D0→D2</text>
+          <text class="lbl" x="698" y="206" style="text-anchor:start">D7 → IN</text>
+          <!-- 分線點 -->
+          <circle class="jn-ring" cx="567" cy="67" r="12"/>
+          <circle class="jn" cx="567" cy="67" r="6"/>
+          <text class="call" x="554" y="116">① 從手動開關後方分出一條線</text>
+          <text class="call" x="474" y="173">② 降壓至 5 V，供電給 Arduino、雨滴感測器、繼電器模組</text>
+          <!-- 節點 -->
+          <g class="n"><rect x="10" y="40" width="118" height="54" rx="9"/><text class="t" x="69" y="63">110 V 市電</text><text class="s" x="69" y="81">市電輸入</text></g>
+          <g class="n"><rect x="148" y="40" width="118" height="54" rx="9"/><text class="t" x="207" y="63">變壓器</text><text class="s" x="207" y="81">110 V → 12 V</text></g>
+          <g class="n"><rect x="286" y="40" width="118" height="54" rx="9"/><text class="t" x="345" y="63">保險絲</text><text class="s" x="345" y="81">2 A 過電流保護</text></g>
+          <g class="n sw"><rect x="424" y="40" width="118" height="54" rx="9"/><text class="t" x="483" y="63">手動開關</text><text class="s" x="483" y="81">人工總開關</text></g>
+          <g class="n sw"><rect x="592" y="40" width="118" height="54" rx="9"/><text class="t" x="651" y="63">繼電器</text><text class="s" x="651" y="81">COM → NO</text></g>
+          <g class="n hot"><rect x="730" y="40" width="118" height="54" rx="9"/><text class="t" x="789" y="63">升壓線圈</text><text class="s" x="789" y="81">12 V → 15 kV</text></g>
+          <g class="n hot"><rect x="868" y="40" width="118" height="54" rx="9"/><text class="t" x="927" y="63">銅片極板</text><text class="s" x="927" y="81">15 kV 電場</text></g>
+          <g class="n lv"><rect x="487" y="145" width="160" height="46" rx="9"/><text class="t" x="567" y="165">降壓 5 V</text><text class="s" x="567" y="182">低壓控制電路供電</text></g>
+          <g class="n lv"><rect x="400" y="250" width="140" height="46" rx="9"/><text class="t" x="470" y="270">雨滴感測器</text><text class="s" x="470" y="287">偵測降雨（D0）</text></g>
+          <g class="n lv"><rect x="610" y="250" width="140" height="46" rx="9"/><text class="t" x="680" y="270">Arduino</text><text class="s" x="680" y="287">判斷並控制繼電器</text></g>
+        </svg>
+
+        <!-- 手機版方塊圖（直式） -->
+        <svg class="cdiag cdiag-tall" viewBox="0 0 364 506" aria-hidden="true">
+          <defs>
+            <marker id="mA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="mH" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-hot" d="M0,0 L10,5 L0,10 z"/></marker>
+            <marker id="mE" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="ah-eco" d="M0,0 L10,5 L0,10 z"/></marker>
+          </defs>
+          <path class="w" d="M89,54 V72" marker-end="url(#mA)"/>
+          <path class="w" d="M89,118 V136" marker-end="url(#mA)"/>
+          <path class="w" d="M89,182 V200" marker-end="url(#mA)"/>
+          <path class="w" d="M89,246 V302" marker-end="url(#mA)"/>
+          <path class="w w-hot" d="M89,348 V366" marker-end="url(#mH)"/>
+          <path class="w w-hot" d="M89,412 V430" marker-end="url(#mH)"/>
+          <path class="w-5v" d="M89,275 H271 V302" marker-end="url(#mE)"/>
+          <path class="w-5v" d="M271,348 V378" marker-end="url(#mE)"/>
+          <path class="w-5v" d="M346,326 H356 V478 H348" marker-end="url(#mE)"/>
+          <path class="w-sig" d="M236,424 V454" marker-end="url(#mE)"/>
+          <path class="w-sig" d="M196,478 H180 V326 H166" marker-end="url(#mE)"/>
+          <circle class="jn-ring" cx="89" cy="275" r="11"/>
+          <circle class="jn" cx="89" cy="275" r="5.5"/>
+          <text class="call" x="186" y="267" style="text-anchor:middle">從手動開關後分出</text>
+          <g class="n"><rect x="14" y="10" width="150" height="44" rx="9"/><text class="t" x="89" y="30">110 V 市電</text><text class="s" x="89" y="46">市電輸入</text></g>
+          <g class="n"><rect x="14" y="74" width="150" height="44" rx="9"/><text class="t" x="89" y="94">變壓器</text><text class="s" x="89" y="110">110 V → 12 V</text></g>
+          <g class="n"><rect x="14" y="138" width="150" height="44" rx="9"/><text class="t" x="89" y="158">保險絲</text><text class="s" x="89" y="174">2 A 過電流保護</text></g>
+          <g class="n sw"><rect x="14" y="202" width="150" height="44" rx="9"/><text class="t" x="89" y="222">手動開關</text><text class="s" x="89" y="238">人工總開關</text></g>
+          <g class="n sw"><rect x="14" y="304" width="150" height="44" rx="9"/><text class="t" x="89" y="324">繼電器</text><text class="s" x="89" y="340">COM → NO</text></g>
+          <g class="n hot"><rect x="14" y="368" width="150" height="44" rx="9"/><text class="t" x="89" y="388">升壓線圈</text><text class="s" x="89" y="404">12 V → 15 kV</text></g>
+          <g class="n hot"><rect x="14" y="432" width="150" height="44" rx="9"/><text class="t" x="89" y="452">銅片極板</text><text class="s" x="89" y="468">15 kV 電場</text></g>
+          <g class="n lv"><rect x="196" y="304" width="150" height="44" rx="9"/><text class="t" x="271" y="324">降壓 5 V</text><text class="s" x="271" y="340">低壓控制電路供電</text></g>
+          <g class="n lv"><rect x="196" y="380" width="150" height="44" rx="9"/><text class="t" x="271" y="400">雨滴感測器</text><text class="s" x="271" y="416">偵測降雨（D0）</text></g>
+          <g class="n lv"><rect x="196" y="456" width="150" height="44" rx="9"/><text class="t" x="271" y="476">Arduino</text><text class="s" x="271" y="492">D7 → 繼電器 IN</text></g>
+        </svg>
+
+        <div class="clegend">
+          <span><i class="lg-m"></i>市電／12 V 電力路徑</span>
+          <span><i class="lg-h"></i>15 kV 高壓</span>
+          <span><i class="lg-5"></i>5 V 分支供電（手動開關後分出）</span>
+          <span><i class="lg-s"></i>控制訊號</span>
         </div>
         <div class="grid g3 mt-s circuit-notes">
           <p class="small"><strong>乾燥</strong>：D7 輸出觸發電位（低電位觸發），繼電器吸合、NO 導通，15 kV 正常運作。</p>
           <p class="small"><strong>偵測到水</strong>：繼電器即時斷電，高壓關閉；停雨後經 DRY_DELAY 延遲才復電。</p>
-          <p class="small"><strong>手動開關</strong>：串接在繼電器 COM 端之前，關閉時直接切斷電源，優先權最高。</p>
+          <p class="small"><strong>手動開關</strong>：串接在繼電器 COM 端之前，關閉時直接切斷高壓，Arduino、感測器與繼電器模組也一併斷電，優先權最高。</p>
         </div>
       </div>
       <p class="small mt-s reveal">完整電路方塊圖見 <a href="#rain" class="hl">3.2 雨滴感測器安全保護模組</a>（圖七）。</p>
@@ -635,7 +732,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
       <div class="logic mt-s">
         <div class="card reveal d1"><h4><span class="dot" style="background:var(--eco)"></span>乾燥 ＋ 手動開關開啟</h4><p class="small">Arduino D7 輸出觸發電位（低電位觸發），繼電器吸合、NO 導通，15 kV 電場正常運作。</p></div>
         <div class="card reveal d2"><h4><span class="dot" style="background:var(--accent)"></span>偵測降雨 / Arduino 異常</h4><p class="small">繼電器釋放、NO 斷開，高壓隨即關閉；停雨後須經延遲時間才重新供電，避免殘留濕氣誤動作。</p></div>
-        <div class="card reveal d3"><h4><span class="dot" style="background:var(--danger)"></span>手動開關關閉</h4><p class="small">最高優先權：無論繼電器狀態，電源於實體電路上即被直接切斷。</p></div>
+        <div class="card reveal d3"><h4><span class="dot" style="background:var(--danger)"></span>手動開關關閉</h4><p class="small">最高優先權：無論繼電器狀態，電源於實體電路上即被直接切斷；Arduino 與感測器的電源也取自手動開關後方，會一併斷電。</p></div>
       </div>
 
       <div class="sim mt-m reveal" id="rainSim">
@@ -652,14 +749,16 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
                 <span class="nd on" data-n="tf">變壓器 12 V</span><b>→</b>
                 <span class="nd on" data-n="fuse">2 A 保險絲</span><b>→</b>
                 <span class="nd" data-n="sw">手動開關</span><b>→</b>
+                <span class="nd sig" data-n="tap" title="由此分出一條線，降壓至 5 V 供電給 Arduino">● 分線點</span><b>→</b>
                 <span class="nd" data-n="relay">繼電器 COM→NO</span><b>→</b>
                 <span class="nd" data-n="boost">升壓 15 kV</span><b>→</b>
                 <span class="nd" data-n="plate">銅片極板</span>
               </div>
             </div>
             <div>
-              <div class="serial-h">低壓訊號迴路</div>
+              <div class="serial-h">低壓訊號迴路（5 V，由手動開關後方降壓供電）</div>
               <div class="nodes">
+                <span class="nd sig" data-n="v5">↳ 由分線點降壓 5 V</span><b>→</b>
                 <span class="nd sig" data-n="sensor">雨滴感測器 D0</span><b>→</b>
                 <span class="nd sig" data-n="mcu">Arduino</span><b>→</b>
                 <span class="nd sig" data-n="in">D7 → 繼電器 IN</span>
@@ -746,7 +845,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
       <p class="muted reveal" style="max-width:780px">基於專題預算考量，選用電動腳踏車之驅動輪（48 V 輪轂馬達）架設於專用支架上，將靜電捕捉裝置鎖固於馬達後方，模擬摩擦時粉塵隨氣流發散之位置。</p>
       <div class="grid g21 mt-s">
         <figure class="reveal"><div class="frame"><img src="images/fig06.jpg" alt="輪轂馬達模組" loading="lazy"></div><figcaption><b>圖六</b>用於模擬之輪轂馬達模組</figcaption></figure>
-        <figure class="reveal d1"><div class="frame"><img src="images/fig16.jpg" alt="動態摩擦測試平台" loading="lazy"></div><figcaption><b>圖十六</b>動態摩擦測試平台（輪胎下方鋪設砂紙）</figcaption></figure>
+        <figure class="reveal d1"><div class="frame"><img src="images/fig16.jpg" alt="動態摩擦測試之輪轂馬達實驗平台架設情形" loading="lazy"></div><figcaption><b>圖十六</b>動態摩擦測試之輪轂馬達實驗平台架設情形。</figcaption></figure>
       </div>
     </div>
   </div>
@@ -1267,38 +1366,42 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
     }
     function boot(){
       S.power=false; S.everWet=false; S.lastWet=0; S.bootAt=performance.now()+1000;
+      if(!S.manual){ render(); return; }              // 沒電就開不了機
       serial.innerHTML=''; log('=== 系統啟動 ===');
       render();
     }
     function tick(){
       const now=performance.now();
-      if(S.crashed || now<S.bootAt){ render(); return; }
+      if(!S.manual || S.crashed || now<S.bootAt){ render(); return; }
       if(S.wet){ S.lastWet=now; S.everWet=true; S.power=false; log('偵測到水 → 繼電器斷電','wet'); }
       else if(!S.everWet || now-S.lastWet>DRY_DELAY){ S.power=true; log('乾燥 → 繼電器通電','dry'); }
       else { log('剛停雨，等待中...','wait'); }
       render();
     }
     function render(){
-      const relayClosed=!S.crashed && S.power;        // NO 接點：線圈失磁即斷開（fail-safe）
+      const lv=S.manual;                              // Arduino／感測器／繼電器模組的 5 V 取自手動開關後方
+      const relayClosed=lv && !S.crashed && S.power;  // NO 接點：線圈失磁即斷開（fail-safe）
       const hv=S.manual && relayClosed;               // 手動開關串接在 COM 前，最高優先權
       nd('sw').className='nd'+(S.manual?' on':' bad cut');
-      nd('relay').className='nd'+(S.manual&&relayClosed?' on':(relayClosed?'':' cut'));
+      nd('relay').className='nd'+(relayClosed?' on':' cut');
       nd('boost').className='nd'+(hv?' on':'');
       nd('plate').className='nd'+(hv?' on':'');
-      nd('sensor').className='nd sig'+(S.wet?' bad':' on');
-      nd('sensor').textContent=S.wet?'雨滴感測器 D0：有水':'雨滴感測器 D0：乾燥';
-      nd('mcu').className='nd sig'+(S.crashed?' bad':' on');
-      nd('mcu').textContent=S.crashed?'Arduino：當機':'Arduino：運作中';
+      nd('v5').className='nd sig'+(lv?' on':'');
+      nd('tap').className='nd sig'+(lv?' on':'');
+      nd('sensor').className='nd sig'+(!lv?'':(S.wet?' bad':' on'));
+      nd('sensor').textContent=!lv?'雨滴感測器：無電源':(S.wet?'雨滴感測器 D0：有水':'雨滴感測器 D0：乾燥');
+      nd('mcu').className='nd sig'+(!lv?'':(S.crashed?' bad':' on'));
+      nd('mcu').textContent=!lv?'Arduino：無電源':(S.crashed?'Arduino：當機':'Arduino：運作中');
       nd('in').className='nd sig'+(relayClosed?' on':'');
       document.getElementById('hvState').classList.toggle('on',hv);
       document.getElementById('hvText').textContent=hv?'ON':'OFF';
       document.getElementById('relayText').textContent=relayClosed?'吸合（NO 導通）':'釋放（NO 斷開）';
       let remain=0;
-      if(!S.crashed && !S.wet && S.everWet) remain=Math.max(0,DRY_DELAY-(performance.now()-S.lastWet));
+      if(lv && !S.crashed && !S.wet && S.everWet) remain=Math.max(0,DRY_DELAY-(performance.now()-S.lastWet));
       document.getElementById('delayText').textContent=remain>0?(remain/1000).toFixed(1)+' s':'—';
       document.getElementById('delayBar').style.width=(remain>0?(1-remain/DRY_DELAY)*100:0)+'%';
       let note;
-      if(!S.manual) note='手動開關關閉：電源在實體電路上直接被切斷。Arduino 仍照常輸出，但這個斷電不會出現在序列埠。';
+      if(!S.manual) note='手動開關關閉：高壓電源在實體電路上直接被切斷；Arduino、感測器與繼電器模組的電源也取自開關後方，一併斷電，序列埠停止輸出。重新開啟後 Arduino 會重新開機。';
       else if(S.crashed) note='Arduino 當機或訊號線鬆脫：繼電器線圈失磁，NO 接點自動彈開，高壓關閉（fail-safe）。';
       else if(performance.now()<S.bootAt) note='開機時 setup() 先把繼電器設為斷電，確保高壓不會誤啟動。';
       else if(S.wet) note='偵測到降雨：繼電器即時斷電，15 kV 電場關閉。';
@@ -1314,15 +1417,15 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
     seg('wx',v=>{S.wet=v==='wet'; tick();});
     seg('mcu',v=>{ const was=S.crashed; S.crashed=v==='crash'; if(was&&!S.crashed) boot(); else render(); });
     const m=document.getElementById('manual');
-    m.addEventListener('click',()=>{S.manual=!S.manual; m.setAttribute('aria-checked',S.manual); render();});
+    m.addEventListener('click',()=>{
+      S.manual=!S.manual; m.setAttribute('aria-checked',S.manual);
+      if(S.manual){ boot(); }                          // 復電 → Arduino 重新執行 setup()
+      else { S.power=false; log('── 電源中斷（此行為模擬器標註，非序列埠輸出）──','t'); render(); }
+    });
     document.getElementById('reboot').addEventListener('click',()=>{
       S.crashed=false; root.querySelectorAll('#mcu button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.v==='ok')); boot();
     });
-    let timer=null;
-    new IntersectionObserver(es=>{
-      if(es[0].isIntersecting){ if(!timer){ boot(); timer=setInterval(tick,TICK);} }
-      else if(timer){ clearInterval(timer); timer=null; }
-    }).observe(root);
+    boot(); setInterval(tick,TICK);
   })();
 
   /* ---- Hero 微粒動畫：粒子由左流入，靠近中央「極板」時被吸附 ---- */
