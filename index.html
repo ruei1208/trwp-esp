@@ -20,7 +20,7 @@
   --line:      #25382f;   /* 分隔線 */
   --text:      #e9f0ec;   /* 主文字 */
   --muted:     #93a69c;   /* 次要文字 */
-  --faint:     #5f7268;   /* 更淡的註解 */
+  --faint:     #7d9087;   /* 更淡的註解（深色背景上對比度約 5:1） */
   --accent:    #ff7a1a;   /* 強調色：高壓橘 */
   --accent-2:  #ffb070;   /* 強調色淺階 */
   --accent-bg: rgba(255,122,26,.10);
@@ -57,7 +57,22 @@ section.alt{background:var(--bg-2)}
 .nav ul{list-style:none;display:flex;gap:22px;font-size:14px}
 .nav ul a{text-decoration:none;color:var(--muted);transition:color .2s}
 .nav ul a:hover,.nav ul a.active{color:var(--accent)}
-@media(max-width:860px){.nav ul{display:none}}
+.menu-btn{display:none;background:transparent;border:1px solid var(--line);border-radius:10px;width:42px;height:38px;cursor:pointer;position:relative}
+.menu-btn span,.menu-btn span::before,.menu-btn span::after{position:absolute;left:11px;width:18px;height:2px;background:var(--text);border-radius:2px;transition:transform .25s var(--ease),opacity .2s}
+.menu-btn span{top:17px}
+.menu-btn span::before{content:"";left:0;top:-6px}
+.menu-btn span::after{content:"";left:0;top:6px}
+.nav.open .menu-btn span{background:transparent}
+.nav.open .menu-btn span::before{transform:translateY(6px) rotate(45deg)}
+.nav.open .menu-btn span::after{transform:translateY(-6px) rotate(-45deg)}
+@media(max-width:860px){
+  .menu-btn{display:block}
+  .nav ul{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;gap:0;background:rgba(10,18,14,.97);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:6px var(--gutter) 14px}
+  .nav.open{background:rgba(10,18,14,.97);border-color:var(--line)}
+  .nav.open ul{display:flex}
+  .nav ul a{display:block;padding:13px 0;font-size:17px;border-bottom:1px solid var(--line)}
+  .nav ul li:last-child a{border-bottom:0}
+}
 .progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);z-index:60;width:0}
 
 /* ---------- 共用排版 ---------- */
@@ -109,8 +124,17 @@ figcaption b{color:var(--accent);font-family:var(--font-mono);font-weight:500;ma
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
 .hero .wrap{position:relative;z-index:1;width:100%}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,var(--bg));z-index:0;pointer-events:none}
-.hero h1{font-size:clamp(36px,7.4vw,96px);line-height:1.05;font-weight:900;letter-spacing:-.02em;max-width:14em}
-.hero h1 .en{display:block;font-family:var(--font-num);font-size:.3em;font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:22px;line-height:1.4}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(32px,5vw,72px);align-items:center}
+.hero-photo .frame{box-shadow:0 30px 80px -20px rgba(255,122,26,.35),0 0 0 1px rgba(255,122,26,.35)}
+.hero-photo img{aspect-ratio:1/1;object-fit:cover}
+@media(max-width:860px){
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:28px}
+  .hero-photo{max-width:420px}
+  .hero-photo img{aspect-ratio:4/3;object-position:center 40%}
+}
+.hero h1 .nw{white-space:nowrap}
+.hero h1{font-size:clamp(30px,4.9vw,76px);line-height:1.05;font-weight:900;letter-spacing:-.02em;max-width:14em}
+.hero h1 .en{display:block;font-family:var(--font-num);font-size:max(13px,.3em);font-weight:500;letter-spacing:.04em;color:var(--muted);margin-top:22px;line-height:1.4}
 .hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:clamp(40px,7vw,80px);border-top:1px solid var(--line)}
 .hero-stats>div{padding:24px 24px 0 0}
 .hero-stats>div+div{padding-left:24px;border-left:1px solid var(--line)}
@@ -327,7 +351,8 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
 
 <nav class="nav" id="nav">
   <a class="brand" href="#top"><i></i>TRWP · ESP</a>
-  <ul>
+  <button type="button" class="menu-btn" id="menuBtn" aria-label="開啟選單" aria-expanded="false" aria-controls="navList"><span></span></button>
+  <ul id="navList">
     <li><a href="#problem">問題</a></li>
     <li><a href="#principle">原理</a></li>
     <li><a href="#device">裝置</a></li>
@@ -341,16 +366,24 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
 <header class="hero" id="top">
   <canvas id="particles" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="eyebrow reveal">中原大學機械系 · 專題成果</div>
-    <h1 class="reveal d1">主動式輪胎磨損微粒<br><span class="hl">靜電捕捉裝置</span>
-      <span class="en">Active Electrostatic Capture of Tire &amp; Road Wear Particles (TRWP)</span>
-    </h1>
-    <p class="lead reveal d2" style="margin-top:28px">以 <strong>15 kV 直流高壓電場</strong> 結合 <strong>48 V 輪轂馬達</strong>，在低風阻條件下，於源頭攔截輪胎揚起的導電微粒。</p>
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow reveal">中原大學機械系 · 專題成果</div>
+        <h1 class="reveal d1"><span class="nw">主動式輪胎磨損微粒</span><br><span class="hl nw">靜電捕捉裝置</span>
+          <span class="en">Active Electrostatic Capture of Tire &amp; Road Wear Particles (TRWP)</span>
+        </h1>
+        <p class="lead reveal d2" style="margin-top:28px">以 <strong>15 kV 直流高壓電場</strong> 結合 <strong>48 V 輪轂馬達</strong>，在低風阻條件下，於源頭攔截輪胎揚起的導電微粒。</p>
+      </div>
+      <figure class="hero-photo reveal d3">
+        <div class="frame"><img src="images/fig05.png" alt="靜電集塵裝置雛形：白色 PLA 外殼與四片銅片極板"></div>
+        <figcaption><b>圖五</b>靜電集塵裝置之雛形 · 15 kV / 17 mm</figcaption>
+      </figure>
+    </div>
 
     <div class="hero-stats">
       <div class="reveal d2">
         <div class="num"><span data-count="28" data-dec="0">28</span>%</div>
-        <p>輪胎磨損佔全球初級微塑膠排放來源比例，為第二大宗（圖一，Boucher &amp; Friot）</p>
+        <p>輪胎磨損佔全球初級微塑膠排放來源比例，為第二大宗（Boucher &amp; Friot）</p>
       </div>
       <div class="reveal d3">
         <div class="num">+<span data-count="53.5" data-dec="1">53.5</span>%</div>
@@ -385,9 +418,14 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
         <div class="reveal d1">
           <h3>全球初級微塑膠的第二大來源</h3>
           <p class="muted">依 Boucher 與 Friot 之原始數據，輪胎磨損約佔全球初級微塑膠排放 28%，僅次於人造纖維（35%）。</p>
-          <figure class="mt-s" style="max-width:380px">
-            <div class="frame"><img src="images/fig01.jpeg" alt="全球初級微塑膠排放來源比例圓餅圖" loading="lazy"></div>
-            <figcaption><b>圖一</b>全球初級微塑膠排放來源比例（圖片來源：中央研究院提供，引自中時新聞網；原始數據：Boucher 與 Friot）</figcaption>
+          <figure class="mt-s" style="max-width:460px">
+            <div class="bars" role="img" aria-label="全球初級微塑膠排放來源比例：人造纖維 35%、輪胎磨損 28%、日常耗損 24%、洗面乳 2%">
+              <div class="bar"><span class="small">人造纖維</span><div class="track"><div class="fill off" style="--w:100%"></div></div><span class="n">35%</span></div>
+              <div class="bar"><span class="small" style="color:var(--accent)">輪胎磨損</span><div class="track"><div class="fill" style="--w:80%"></div></div><span class="n hl">28%</span></div>
+              <div class="bar"><span class="small">日常耗損</span><div class="track"><div class="fill off" style="--w:68.6%"></div></div><span class="n">24%</span></div>
+              <div class="bar"><span class="small">洗面乳</span><div class="track"><div class="fill off" style="--w:5.7%"></div></div><span class="n">2%</span></div>
+            </div>
+            <figcaption style="margin-top:14px"><b>圖一</b>全球初級微塑膠排放來源比例（依報告圖一數據重繪；原始數據：Boucher &amp; Friot, 2017）。其餘較小來源未逐項列出。</figcaption>
           </figure>
         </div>
       </div>
@@ -424,7 +462,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
         </div>
         <div class="card flaw reveal d3">
           <h4>既有靜電捕捉概念</h4>
-          <p class="small">國際新創團隊（如 The Tyre Collective）提出之靜電捕捉概念仍處於初步專利階段，缺乏具體的高壓電場流場驗證與模組化機構設計。</p>
+          <p class="small">國際新創團隊（如 The Tyre Collective）已提出靜電捕捉概念與原型，但公開資料中較少完整的高壓電場流場驗證與模組化機構設計細節。</p>
         </div>
       </div>
     </div>
@@ -971,7 +1009,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
         <div class="avatar">陳</div>
         <div class="name">陳睿瑀</div>
         <div class="role">專題生</div>
-        <p>3D CAD 模型設計與建模（Inventor，含集塵盒回收機構）、高壓電路佈線與絕緣實作、雨滴感測器安全保護模組之電路設計與程式實作、實驗設計、數據分析、統整專題書面報告。</p>
+        <p>3D CAD 模型設計與建模、高壓電路與雨滴感測器模組之電路設計與程式實作、實驗設計、數據分析、統整專題書面報告。</p>
       </div>
       <div class="member reveal d2">
         <div class="avatar">李</div>
@@ -1075,6 +1113,13 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
     links.forEach((a,i)=>a.classList.toggle('active',i===cur));
   }
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  /* ---- 手機選單 ---- */
+  const menuBtn=document.getElementById('menuBtn');
+  function setMenu(open){ nav.classList.toggle('open',open); menuBtn.setAttribute('aria-expanded',open); menuBtn.setAttribute('aria-label',open?'關閉選單':'開啟選單'); }
+  menuBtn.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+  links.forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+  addEventListener('keydown',e=>{ if(e.key==='Escape') setMenu(false); });
 
   /* ---- 圖片燈箱 ---- */
   const lb=document.getElementById('lb'), lbImg=lb.querySelector('img'), lbCap=lb.querySelector('p');
