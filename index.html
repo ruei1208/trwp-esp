@@ -842,7 +842,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
     <!-- 實驗平台 -->
     <div class="mt-l">
       <h3 class="reveal">動態模擬平台</h3>
-      <p class="muted reveal" style="max-width:780px">基於專題預算考量，選用電動腳踏車之驅動輪（48 V 輪轂馬達）架設於專用支架上，將靜電捕捉裝置鎖固於馬達後方，模擬摩擦時粉塵隨氣流發散之位置。</p>
+      <p class="muted reveal" style="max-width:780px">基於專題預算與設計難度考量，選用電動腳踏車之驅動輪（48 V 輪轂馬達）架設於專用支架上，將靜電捕捉裝置鎖固於馬達後方，模擬摩擦時粉塵隨氣流發散之位置。</p>
       <div class="grid g21 mt-s">
         <figure class="reveal"><div class="frame"><img src="images/fig06.jpg" width="1824" height="722" alt="輪轂馬達模組" loading="lazy"></div><figcaption><b>圖六</b>用於模擬之輪轂馬達模組</figcaption></figure>
         <figure class="reveal d1"><div class="frame"><img src="images/fig16.jpg" width="577" height="937" alt="動態摩擦測試之輪轂馬達實驗平台架設情形" loading="lazy"></div><figcaption><b>圖十六</b>動態摩擦測試之輪轂馬達實驗平台架設情形。</figcaption></figure>
@@ -873,7 +873,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
             <div class="cap">開啟 15 kV（n=5）</div>
           </div>
         </div>
-        <div class="desc">吹塵方式與裝置幾何相同、僅電場開關不同，兩者相差約 <span class="times">22×</span>；經 Welch t 檢定差異達統計顯著（t = 7.68，p &lt; 0.01），可歸因於電場產生之庫侖力，確認靜電捕捉機制有效成立。</div>
+        <div class="desc">吹塵方式與裝置幾何相同、僅電場開關不同，兩者相差約 <span class="times">22×</span>；關閉之三次均不高於 1.00%，開啟之五次介於 9.00%–21.00%，<strong>兩組數值範圍完全沒有重疊</strong>，差異可歸因於電場產生之庫侖力，顯示靜電捕捉機制確實發揮作用。</div>
       </div>
 
       <div class="kpi reveal d1">
@@ -899,7 +899,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
       <div class="kpi wide hero-kpi reveal">
         <div class="label">Stage 3 · 質譜鑑定質量誤差（6PPD）</div>
         <div class="val"><span data-count="2.98" data-dec="2">2.98</span><span class="u">ppm</span></div>
-        <div class="desc">以 Bruker micrOTOF II 高解析飛行時間質譜儀比對同位素分布：理論精確質量 <strong>268.1934 Da</strong>，實測 <strong>268.1926 Da</strong>，低於高解析質譜一般採用之 <strong>5 ppm</strong> 判定門檻，且 M 與 M+1 同位素峰相對強度與理論相符。</div>
+        <div class="desc">以 Bruker micrOTOF II 高解析飛行時間質譜儀比對同位素分布：理論精確質量 <strong>268.1934 Da</strong>，實測 <strong>268.1926 Da</strong>，落在高解析質譜一般採用之 <strong>5 ppm</strong> 誤差範圍內，且 M 與 M+1 同位素峰相對強度與理論分布相近——僅為初步跡象，仍待 6PPD 真品標準品比對方能確認。</div>
       </div>
 
       <div class="kpi reveal d1">
@@ -971,7 +971,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
       </div>
       <div class="grid g2 mt-s">
         <figure class="reveal"><div class="frame"><img src="images/fig17.jpg" width="900" height="694" alt="粉塵於收集面之實際沉積情形" loading="lazy"></div><figcaption><b>圖十七</b>粉塵於收集面之實際沉積情形</figcaption></figure>
-        <div class="note reveal d1" style="align-self:start"><strong>兩種效率不宜直接比較。</strong>靜態測試於封閉艙體內將全部粉塵導入極板通道；動態測試於開放環境中進行，分母包含未進入裝置捕捉範圍之粉塵。兩者粉塵產生機制、流場條件與效率定義均不同，僅能各自作為對應情境下之獨立指標。</div>
+        <div class="note reveal d1" style="align-self:start"><strong>開放環境下收集效率仍不高。</strong>主因是輪胎噴出之粉塵擴散範圍（水平 0–73 cm）遠大於裝置之捕捉截面，大部分粉塵未進入極板通道；後續可於裝置前端加裝<strong>導流罩</strong>，將粉塵集中導入極板通道以改善收集效率。<br><br><strong>兩種效率不宜直接比較。</strong>靜態測試於封閉艙體內將全部粉塵導入極板通道；動態測試於開放環境中進行，分母包含未進入裝置捕捉範圍之粉塵。兩者粉塵產生機制、流場條件與效率定義均不同，僅能各自作為對應情境下之獨立指標。</div>
       </div>
     </div>
 
@@ -979,8 +979,8 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
     <div class="split mt-l">
       <div class="reveal">
         <h3>從「抓到多少」<br>到「抓到的是什麼」</h3>
-        <p class="muted">動態摩擦測試取得之粉塵樣本，以深色玻璃罐盛裝、冷藏，並於採集後 24 小時內完成質譜測定。樣品 1 之精確質量與同位素型態兩項證據均與 <strong>6PPD</strong> 相符，初步支持本裝置所攔截微粒與真實 TRWP 具化學關聯性。</p>
-        <p class="small mt-s">＊目前尚缺乏 6PPD 真品標準品進行同批次比對，尚無法完全排除其他同分子量化合物之可能性，為後續補強重點。</p>
+        <p class="muted">動態摩擦測試取得之粉塵樣本，以深色玻璃罐盛裝、冷藏，並於採集後 24 小時內完成質譜測定。樣品 1 之精確質量與同位素型態均與 <strong>6PPD</strong> 之特徵相近，推測樣品中<strong>可能含有 6PPD</strong>。</p>
+        <p class="small mt-s">＊實測值與理論值間仍存在些微差異，且目前缺乏 6PPD 真品標準品進行同批次比對，尚無法排除其他分子量相近之化合物，故本結果僅能視為初步跡象；後續需以真品標準品比對，方能確認所攔截微粒與真實 TRWP 之化學關聯性。</p>
       </div>
       <figure class="reveal d1">
         <div class="frame"><img src="images/fig21.png" width="1300" height="576" alt="樣品1之6PPD實測同位素分布與理論值比對" loading="lazy"></div>
@@ -998,7 +998,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
             <tr><td>電場強度衰減指數</td><td>E ∝ d⁻¹（理想平行板）</td><td><span class="hl">核心面積 ∝ d⁻⁰·⁶⁸</span></td><td class="muted">近場邊緣效應致衰減較緩</td></tr>
             <tr><td>靜態捕捉效率</td><td>工業 ESP 約 90–99.9%</td><td><span class="hl">16.29%</span></td><td class="muted">極板面積與滯留時間不足</td></tr>
             <tr><td>動態捕捉效率</td><td>文獻原型 60–80%</td><td><span class="hl">約 28%</span></td><td class="muted">開放流場、未加裝導流罩</td></tr>
-            <tr><td>6PPD 精確質量</td><td>268.1934 Da</td><td><span class="hl">268.1926 Da</span></td><td class="muted">誤差 2.98 ppm，符合門檻</td></tr>
+            <tr><td>6PPD 精確質量</td><td>268.1934 Da</td><td><span class="hl">268.1926 Da</span></td><td class="muted">誤差 2.98 ppm，相近但仍待標準品驗證</td></tr>
           </tbody>
         </table>
       </div>
@@ -1074,6 +1074,7 @@ details ol{padding-left:22px;margin-top:14px;font-size:12.5px;color:var(--muted)
           <li>延長運轉時間、增加重複次數，增加單次量測質量以降低相對量測誤差，並強化統計代表性。</li>
           <li>比較不同砂紙目數與柏油之產塵特性；取得 6PPD 真品標準品比對，嘗試建立同位素稀釋定量方法。</li>
           <li>導入絕緣性替代粉體作為對照組，驗證對導電微粒之選擇性捕捉能力。</li>
+          <li>於裝置前端加裝導流罩並納入動態摩擦測試，比較加裝前後之收集效率，改善開放環境下收集效率偏低之問題。</li>
         </ol>
       </div>
       <div>
