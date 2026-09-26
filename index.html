@@ -120,7 +120,8 @@ figcaption b{color:var(--accent);font-family:var(--font-mono);font-weight:500;ma
 .placeholder small{color:var(--muted);font-size:12px}
 
 /* ---------- HERO ---------- */
-.hero{min-height:100svh;display:flex;align-items:center;padding-top:110px;overflow:hidden}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:110px;padding-bottom:110px;overflow:hidden}
+@media(max-width:700px){.hero{padding-bottom:48px}}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.55}
 .hero .wrap{position:relative;z-index:1;width:100%}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:40%;background:linear-gradient(transparent,var(--bg));z-index:0;pointer-events:none}
